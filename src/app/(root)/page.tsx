@@ -47,13 +47,13 @@ const Home = async () => {
             <p className="mt-4 md:mt-6 max-w-xl text-base md:text-lg text-[--color-light-300]">
               Discover cutting-edge gadgets and premium electronics. From high-performance rigs to everyday essentials.
             </p>
-            <div className="mt-6 md:mt-10 flex flex-col sm:flex-row gap-4">
+            <div className="mt-6 md:mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 href="/products"
                 className="group relative overflow-hidden rounded-lg bg-[--color-neon-blue] px-6 md:px-8 py-3 md:py-4 font-rajdhani text-base md:text-lg font-bold text-black text-center transition-all hover:shadow-[0_0_30px_rgba(0,243,255,0.6)] hover-lift"
               >
                 <span className="relative z-10">Shop Now</span>
-                <div className="absolute inset-0 bg-white opacity-0 transition-opacity group-hover:opacity-20" />
+                <div className="absolute inset-0 bg-white opacity-100 transition-opacity group-hover:opacity-20" />
               </Link>
               <Link
                 href="/products?category=laptops"
