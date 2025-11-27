@@ -4,27 +4,64 @@ import { useState } from "react";
 import Link from "next/link";
 import SocialProviders from "./SocialProviders";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   mode: "sign-in" | "sign-up";
-  onSubmit: (formData: FormData) => Promise<{ ok: boolean; userId?: string } | void>;
 };
 
-export default function AuthForm({ mode, onSubmit }: Props) {
+export default function AuthForm({ mode }: Props) {
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
 
     const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const name = formData.get("name") as string;
 
     try {
-      const result = await onSubmit(formData);
-
-      if (result?.ok) router.push("/");
+      if (mode === "sign-in") {
+        await authClient.signIn.email({
+          email,
+          password,
+        }, {
+          onSuccess: () => {
+            router.push("/");
+            router.refresh();
+          },
+          onError: (ctx) => {
+            setError(ctx.error.message);
+            setLoading(false);
+          }
+        });
+      } else {
+        await authClient.signUp.email({
+          email,
+          password,
+          name,
+        }, {
+          onSuccess: () => {
+            router.push("/");
+            router.refresh();
+          },
+          onError: (ctx) => {
+            setError(ctx.error.message);
+            setLoading(false);
+          }
+        });
+      }
     } catch (e) {
       console.log("error", e);
+      setError("An unexpected error occurred");
+      setLoading(false);
     }
   }
 
@@ -61,6 +98,12 @@ export default function AuthForm({ mode, onSubmit }: Props) {
         className="space-y-4"
         onSubmit={handleSubmit}
       >
+        {error && (
+          <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-500 border border-red-500/20">
+            {error}
+          </div>
+        )}
+
         {mode === "sign-up" && (
           <div className="space-y-1">
             <label htmlFor="name" className="text-xs font-medium text-[--color-light-300]">
@@ -73,6 +116,7 @@ export default function AuthForm({ mode, onSubmit }: Props) {
               placeholder="Enter your name"
               className="w-full rounded-lg border border-[--color-dark-700] bg-[--color-dark-900] px-4 py-3 text-white placeholder:text-[--color-dark-500] focus:border-[--color-neon-blue] focus:outline-none focus:ring-1 focus:ring-[--color-neon-blue]"
               autoComplete="name"
+              required
             />
           </div>
         )}
@@ -120,9 +164,10 @@ export default function AuthForm({ mode, onSubmit }: Props) {
 
         <button
           type="submit"
-          className="mt-2 w-full rounded-lg bg-[--color-neon-blue] px-6 py-3 font-bold text-black transition-all hover:bg-white hover:shadow-[0_0_15px_rgba(0,243,255,0.5)] focus:outline-none focus:ring-2 focus:ring-[--color-neon-blue]"
+          disabled={loading}
+          className="mt-2 flex w-full items-center justify-center rounded-lg bg-[--color-neon-blue] px-6 py-3 font-bold text-black transition-all hover:bg-white hover:shadow-[0_0_15px_rgba(0,243,255,0.5)] focus:outline-none focus:ring-2 focus:ring-[--color-neon-blue] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {mode === "sign-in" ? "Sign In" : "Sign Up"}
+          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (mode === "sign-in" ? "Sign In" : "Sign Up")}
         </button>
 
         {mode === "sign-up" && (
