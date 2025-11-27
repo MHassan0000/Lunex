@@ -189,7 +189,37 @@ async function seed() {
         });
       }
 
-      log(`Seeded product ${p.name} with ${variantIds.length} variants`);
+      // Add product images using existing shoe images
+      const imageUrls = [
+        '/shoes/shoe-1.jpg',
+        '/shoes/shoe-2.webp',
+        '/shoes/shoe-3.webp',
+        '/shoes/shoe-4.webp',
+      ];
+
+      // Add one primary image for the product (not variant-specific)
+      const primaryImageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+      await db.insert(productImages).values(insertProductImageSchema.parse({
+        productId: insertedProduct.id,
+        variantId: null, // Product-level image
+        url: primaryImageUrl,
+        isPrimary: true,
+        sortOrder: 0,
+      }) as InsertProductImage);
+
+      // Add variant-specific images
+      for (let i = 0; i < Math.min(variantIds.length, 3); i++) {
+        const variantImageUrl = imageUrls[(i + 1) % imageUrls.length];
+        await db.insert(productImages).values(insertProductImageSchema.parse({
+          productId: insertedProduct.id,
+          variantId: variantIds[i],
+          url: variantImageUrl,
+          isPrimary: false,
+          sortOrder: i + 1,
+        }) as InsertProductImage);
+      }
+
+      log(`Seeded product ${p.name} with ${variantIds.length} variants and images`);
     }
 
     log('Seeding complete');

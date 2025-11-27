@@ -1,14 +1,18 @@
+import Link from "next/link";
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-[--color-dark-950]">
-      <header className="border-b border-[--color-dark-700] bg-[--color-dark-900] px-4 py-4">
-        <div className="mx-auto flex max-w-7xl items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[--color-neon-blue] font-rajdhani text-xl font-bold text-black">
-            L
+      <Link href="/">
+        <header className="border-b border-[--color-dark-700] bg-[--color-dark-900] px-4 py-4">
+          <div className="mx-auto flex max-w-7xl items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[--color-neon-blue] font-rajdhani text-xl font-bold text-black">
+              L
+            </div>
+            <span className="font-rajdhani text-xl font-bold text-white">Lunex</span>
           </div>
-          <span className="font-rajdhani text-xl font-bold text-white">Lunex</span>
-        </div>
-      </header>
+        </header>
+      </Link>
       <main className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">

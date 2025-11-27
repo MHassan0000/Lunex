@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Card, CollapsibleSection, ProductGallery, StoragePicker, ScrollReveal } from "@/components";
-import { Heart, ShoppingBag, Star, ShieldCheck, Calendar, Cpu } from "lucide-react";
+import { Card, CollapsibleSection, ProductGallery, StoragePicker } from "@/components";
+import { Heart, ShoppingBag, Star, ShieldCheck, Calendar } from "lucide-react";
 import ColorSwatches from "@/components/ColorSwatches";
 import { getProduct, getProductReviews, getRecommendedProducts, type Review, type RecommendedProduct } from "@/lib/actions/product";
 
@@ -16,7 +16,7 @@ function NotFoundBlock() {
   return (
     <section className="mx-auto max-w-3xl rounded-xl border border-[--color-dark-700] bg-[--color-dark-800] p-8 text-center">
       <h1 className="font-rajdhani text-3xl font-bold text-white">Product not found</h1>
-      <p className="mt-2 text-[--color-dark-500]">The product you’re looking for doesn’t exist or may have been removed.</p>
+      <p className="mt-2 text-[--color-dark-500]">The product you're looking for doesn't exist or may have been removed.</p>
       <div className="mt-6">
         <Link
           href="/products"
@@ -152,16 +152,80 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <Link href="/" className="hover:text-[--color-neon-blue]">Home</Link> / <Link href="/products" className="hover:text-[--color-neon-blue]">Products</Link> /{" "}
           <span className="text-white">{product.name}</span>
         </nav>
-        <span className="font-medium text-[--color-dark-500] capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</span>
-        <span className="text-white text-right">{String(value)}</span>
-      </div>
+
+        <section className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_480px]">
+          {galleryVariants.length > 0 && (
+            <ProductGallery productId={product.id} variants={galleryVariants} className="lg:sticky lg:top-24" />
+          )}
+
+          <div className="flex flex-col gap-6">
+            <header className="flex flex-col gap-2">
+              {product.brand && (
+                <Link href={`/products?brand=${product.brand.slug}`} className="text-sm font-bold uppercase tracking-widest text-[--color-neon-blue]">
+                  {product.brand.name}
+                </Link>
+              )}
+              <h1 className="font-rajdhani text-4xl font-bold text-white sm:text-5xl">{product.name}</h1>
+              {product.model && <p className="text-sm text-[--color-dark-500]">Model: {product.model}</p>}
+            </header>
+
+            <div className="flex items-center gap-3">
+              <p className="font-rajdhani text-3xl font-bold text-white text-glow">{formatPrice(displayPrice)}</p>
+              {compareAt && (
+                <>
+                  <span className="text-lg text-[--color-dark-500] line-through">{formatPrice(compareAt)}</span>
+                  {discount !== null && (
+                    <span className="rounded border border-[--color-neon-green] bg-[--color-neon-green]/10 px-2 py-0.5 text-xs font-bold text-[--color-neon-green]">
+                      {discount}% OFF
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-4 text-xs text-[--color-light-300]">
+              {product.releaseYear && (
+                <div className="flex items-center gap-1.5 rounded bg-[--color-dark-800] px-2 py-1">
+                  <Calendar className="h-3.5 w-3.5 text-[--color-neon-purple]" />
+                  <span>Released {product.releaseYear}</span>
+                </div>
+              )}
+              {product.warrantyMonths && (
+                <div className="flex items-center gap-1.5 rounded bg-[--color-dark-800] px-2 py-1">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[--color-neon-green]" />
+                  <span>{product.warrantyMonths} Month Warranty</span>
+                </div>
+              )}
+            </div>
+
+            <ColorSwatches productId={product.id} variants={galleryVariants} />
+            <StoragePicker productId={product.id} />
+
+            <div className="flex flex-col gap-3 mt-4">
+              <button className="flex items-center justify-center gap-2 rounded-md bg-[--color-neon-blue] px-6 py-4 font-rajdhani text-lg font-bold text-black transition-all hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-blue]">
+                <ShoppingBag className="h-5 w-5" />
+                Add to Cart
+              </button>
+              <button className="flex items-center justify-center gap-2 rounded-md border border-[--color-dark-700] bg-[--color-dark-800] px-6 py-4 font-medium text-white transition hover:border-[--color-neon-purple] hover:text-[--color-neon-purple] focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-purple]">
+                <Heart className="h-5 w-5" />
+                Add to Wishlist
+              </button>
+            </div>
+
+            <CollapsibleSection title="Tech Specs" defaultOpen>
+              {specs ? (
+                <div className="grid grid-cols-1 gap-y-2 text-sm">
+                  {Object.entries(specs).map(([key, value]) => (
+                    <div key={key} className="flex justify-between border-b border-[--color-dark-700] py-2 last:border-0">
+                      <span className="font-medium text-[--color-dark-500] capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</span>
+                      <span className="text-white text-right">{String(value)}</span>
+                    </div>
                   ))}
-    </div>
-  ) : (
-    <p className="text-[--color-dark-500]">No specifications available.</p>
-  )
-}
-            </CollapsibleSection >
+                </div>
+              ) : (
+                <p className="text-[--color-dark-500]">No specifications available.</p>
+              )}
+            </CollapsibleSection>
 
             <CollapsibleSection title="Description">
               <p className="text-[--color-light-300] leading-relaxed">{product.description}</p>
@@ -180,24 +244,24 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             >
               <ReviewsSection productId={product.id} />
             </Suspense>
-          </div >
-        </section >
+          </div>
+        </section>
 
-  <Suspense
-    fallback={
-      <section className="mt-16">
-        <h2 className="mb-6 font-rajdhani text-3xl font-bold uppercase tracking-wider text-white">You Might Also Like</h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-96 animate-pulse rounded-xl bg-[--color-dark-800]" />
-          ))}
-        </div>
-      </section>
-    }
-  >
-    <AlsoLikeSection productId={product.id} />
-  </Suspense>
-      </div >
-    </main >
+        <Suspense
+          fallback={
+            <section className="mt-16">
+              <h2 className="mb-6 font-rajdhani text-3xl font-bold uppercase tracking-wider text-white">You Might Also Like</h2>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="h-96 animate-pulse rounded-xl bg-[--color-dark-800]" />
+                ))}
+              </div>
+            </section>
+          }
+        >
+          <AlsoLikeSection productId={product.id} />
+        </Suspense>
+      </div>
+    </main>
   );
 }
