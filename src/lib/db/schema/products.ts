@@ -1,8 +1,7 @@
-import { pgTable, text, timestamp, uuid, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, boolean, jsonb, integer } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { z } from 'zod';
 import { categories } from './categories';
-import { genders } from './filters/genders';
 import { brands } from './brands';
 
 export const products = pgTable('products', {
@@ -10,8 +9,14 @@ export const products = pgTable('products', {
   name: text('name').notNull(),
   description: text('description').notNull(),
   categoryId: uuid('category_id').references(() => categories.id, { onDelete: 'set null' }),
-  genderId: uuid('gender_id').references(() => genders.id, { onDelete: 'set null' }),
   brandId: uuid('brand_id').references(() => brands.id, { onDelete: 'set null' }),
+  model: text('model'),
+  specs: jsonb('specs'), // CPU, RAM, Storage, Display, Battery, OS, GPU
+  storageOptions: jsonb('storage_options'), // Available storage options for this product
+  ramOptions: jsonb('ram_options'), // Available RAM options for this product
+  colorOptions: jsonb('color_options'), // Available colors
+  warrantyMonths: integer('warranty_months'),
+  releaseYear: integer('release_year'),
   isPublished: boolean('is_published').notNull().default(false),
   defaultVariantId: uuid('default_variant_id'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -23,10 +28,6 @@ export const productsRelations = relations(products, ({ one }) => ({
     fields: [products.categoryId],
     references: [categories.id],
   }),
-  gender: one(genders, {
-    fields: [products.genderId],
-    references: [genders.id],
-  }),
   brand: one(brands, {
     fields: [products.brandId],
     references: [brands.id],
@@ -37,8 +38,14 @@ export const insertProductSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   categoryId: z.string().uuid().optional().nullable(),
-  genderId: z.string().uuid().optional().nullable(),
   brandId: z.string().uuid().optional().nullable(),
+  model: z.string().optional(),
+  specs: z.record(z.any()).optional(),
+  storageOptions: z.array(z.string()).optional(),
+  ramOptions: z.array(z.string()).optional(),
+  colorOptions: z.array(z.string()).optional(),
+  warrantyMonths: z.number().int().optional(),
+  releaseYear: z.number().int().optional(),
   isPublished: z.boolean().optional(),
   defaultVariantId: z.string().uuid().optional().nullable(),
   createdAt: z.date().optional(),

@@ -32,10 +32,14 @@ export default function ProductGallery({
     [variants]
   );
 
-  const variantIndex =
-    useVariantStore(
-      (s) => s.selectedByProduct[productId] ?? Math.min(initialVariantIndex, Math.max(validVariants.length - 1, 0))
-    );
+  const selection = useVariantStore((s) => s.getSelection(productId));
+  const selectedColor = selection.color;
+
+  const variantIndex = useMemo(() => {
+    if (!selectedColor) return Math.min(initialVariantIndex, Math.max(validVariants.length - 1, 0));
+    const idx = validVariants.findIndex((v) => v.color === selectedColor);
+    return idx === -1 ? 0 : idx;
+  }, [selectedColor, validVariants, initialVariantIndex]);
 
   const images = validVariants[variantIndex]?.images?.filter(isValidSrc) ?? [];
   const [activeIndex, setActiveIndex] = useState(0);

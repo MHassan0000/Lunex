@@ -2,20 +2,31 @@
 
 import { create } from "zustand";
 
+type VariantSelection = {
+  storage: string | null;
+  ram: string | null;
+  color: string | null;
+};
+
 type State = {
-  selectedByProduct: Record<string, number>;
-  setSelected: (productId: string, index: number) => void;
-  getSelected: (productId: string, fallback?: number) => number;
+  selections: Record<string, VariantSelection>;
+  setSelection: (productId: string, key: keyof VariantSelection, value: string) => void;
+  getSelection: (productId: string) => VariantSelection;
 };
 
 export const useVariantStore = create<State>((set, get) => ({
-  selectedByProduct: {},
-  setSelected: (productId, index) =>
+  selections: {},
+  setSelection: (productId, key, value) =>
     set((s) => ({
-      selectedByProduct: { ...s.selectedByProduct, [productId]: index },
+      selections: {
+        ...s.selections,
+        [productId]: {
+          ...(s.selections[productId] || { storage: null, ram: null, color: null }),
+          [key]: value,
+        },
+      },
     })),
-  getSelected: (productId, fallback = 0) => {
-    const map = get().selectedByProduct;
-    return map[productId] ?? fallback;
+  getSelection: (productId) => {
+    return get().selections[productId] || { storage: null, ram: null, color: null };
   },
 }));

@@ -3,7 +3,7 @@ import { relations } from 'drizzle-orm';
 import { z } from 'zod';
 import { products } from './products';
 import { colors } from './filters/colors';
-import { sizes } from './filters/sizes';
+import { storage } from './storage';
 import { productImages } from './images';
 import { orderItems } from './orders';
 import { cartItems } from './carts';
@@ -15,7 +15,8 @@ export const productVariants = pgTable('product_variants', {
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
   salePrice: numeric('sale_price', { precision: 10, scale: 2 }),
   colorId: uuid('color_id').references(() => colors.id, { onDelete: 'restrict' }).notNull(),
-  sizeId: uuid('size_id').references(() => sizes.id, { onDelete: 'restrict' }).notNull(),
+  storageId: uuid('storage_id').references(() => storage.id, { onDelete: 'restrict' }),
+  ram: text('ram'), // e.g. "8GB", "16GB"
   inStock: integer('in_stock').notNull().default(0),
   weight: real('weight'),
   dimensions: jsonb('dimensions'),
@@ -31,9 +32,9 @@ export const productVariantsRelations = relations(productVariants, ({ one, many 
     fields: [productVariants.colorId],
     references: [colors.id],
   }),
-  size: one(sizes, {
-    fields: [productVariants.sizeId],
-    references: [sizes.id],
+  storage: one(storage, {
+    fields: [productVariants.storageId],
+    references: [storage.id],
   }),
   images: many(productImages),
   orderItems: many(orderItems),
@@ -46,7 +47,8 @@ export const insertVariantSchema = z.object({
   price: z.string(),
   salePrice: z.string().optional().nullable(),
   colorId: z.string().uuid(),
-  sizeId: z.string().uuid(),
+  storageId: z.string().uuid().optional().nullable(),
+  ram: z.string().optional().nullable(),
   inStock: z.number().int().nonnegative().optional(),
   weight: z.number().optional().nullable(),
   dimensions: z

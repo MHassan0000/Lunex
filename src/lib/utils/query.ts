@@ -80,8 +80,8 @@ export function getStringParam(search: string, key: string): string | undefined 
 
 export type NormalizedProductFilters = {
   search?: string;
-  genderSlugs: string[];
-  sizeSlugs: string[];
+  storageSlugs: string[];
+  ramSlugs: string[];
   colorSlugs: string[];
   brandSlugs: string[];
   categorySlugs: string[];
@@ -109,8 +109,8 @@ export function parseFilterParams(sp: Record<string, string | string[] | undefin
 
   const search = getStr("search")?.trim() || undefined;
 
-  const genderSlugs = getArr("gender").map((s) => s.toLowerCase());
-  const sizeSlugs = getArr("size").map((s) => s.toLowerCase());
+  const storageSlugs = getArr("storage").map((s) => s.toLowerCase());
+  const ramSlugs = getArr("ram").map((s) => s.toLowerCase());
   const colorSlugs = getArr("color").map((s) => s.toLowerCase());
   const brandSlugs = getArr("brand").map((s) => s.toLowerCase());
   const categorySlugs = getArr("category").map((s) => s.toLowerCase());
@@ -143,8 +143,8 @@ export function parseFilterParams(sp: Record<string, string | string[] | undefin
 
   return {
     search,
-    genderSlugs,
-    sizeSlugs,
+    storageSlugs,
+    ramSlugs,
     colorSlugs,
     brandSlugs,
     categorySlugs,

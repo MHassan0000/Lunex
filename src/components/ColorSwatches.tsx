@@ -17,25 +17,25 @@ function firstValidImage(images: string[]) {
 }
 
 export default function ColorSwatches({ productId, variants, className = "" }: ColorSwatchesProps) {
-  const setSelected = useVariantStore((s) => s.setSelected);
-  const selected = useVariantStore((s) => s.getSelected(productId, 0));
+  const setSelection = useVariantStore((s) => s.setSelection);
+  const selection = useVariantStore((s) => s.getSelection(productId));
+  const selectedColor = selection.color;
 
   return (
     <div className={`flex flex-wrap gap-3 ${className}`} role="listbox" aria-label="Choose color">
       {variants.map((v, i) => {
         const src = firstValidImage(v.images);
         if (!src) return null;
-        const isActive = selected === i;
+        const isActive = selectedColor === v.color;
         return (
           <button
             key={`${v.color}-${i}`}
-            onClick={() => setSelected(productId, i)}
+            onClick={() => setSelection(productId, "color", v.color)}
             aria-label={`Color ${v.color}`}
             aria-selected={isActive}
             role="option"
-            className={`relative h-[72px] w-[120px] overflow-hidden rounded-lg ring-1 ring-light-300 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-dark-500] ${
-              isActive ? "ring-[--color-dark-500]" : "hover:ring-dark-500"
-            }`}
+            className={`relative h-[72px] w-[120px] overflow-hidden rounded-lg ring-1 ring-light-300 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-dark-500] ${isActive ? "ring-[--color-dark-500]" : "hover:ring-dark-500"
+              }`}
           >
             <Image src={src} alt={v.color} fill sizes="120px" className="object-cover" />
             {isActive && (

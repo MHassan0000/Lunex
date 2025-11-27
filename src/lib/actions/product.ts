@@ -7,11 +7,10 @@ import { db } from "@/lib/db";
 import {
   brands,
   categories,
-  genders,
   productImages,
   productVariants,
   products,
-  sizes,
+  storage,
   colors,
   users,
   reviews,
@@ -20,9 +19,8 @@ import {
   type SelectProductImage,
   type SelectBrand,
   type SelectCategory,
-  type SelectGender,
   type SelectColor,
-  type SelectSize,
+  type SelectStorage,
 } from "@/lib/db/schema";
 
 import { NormalizedProductFilters } from "@/lib/utils/query";
@@ -50,10 +48,6 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
     conds.push(or(ilike(products.name, pattern), ilike(products.description, pattern))!);
   }
 
-  if (filters.genderSlugs.length) {
-    conds.push(inArray(genders.slug, filters.genderSlugs));
-  }
-
   if (filters.brandSlugs.length) {
     conds.push(inArray(brands.slug, filters.brandSlugs));
   }
@@ -62,16 +56,21 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
     conds.push(inArray(categories.slug, filters.categorySlugs));
   }
 
-  const hasSize = filters.sizeSlugs.length > 0;
+  const hasStorage = filters.storageSlugs.length > 0;
+  const hasRam = filters.ramSlugs.length > 0;
   const hasColor = filters.colorSlugs.length > 0;
   const hasPrice = !!(filters.priceMin !== undefined || filters.priceMax !== undefined || filters.priceRanges.length);
 
   const variantConds: SQL[] = [];
-  if (hasSize) {
-    variantConds.push(inArray(productVariants.sizeId, db
-      .select({ id: sizes.id })
-      .from(sizes)
-      .where(inArray(sizes.slug, filters.sizeSlugs))));
+  if (hasStorage) {
+    variantConds.push(inArray(productVariants.storageId, db
+      .select({ id: storage.id })
+      .from(storage)
+      .where(inArray(storage.slug, filters.storageSlugs))));
+  }
+  if (hasRam) {
+    // RAM is stored as text in variants, so we filter directly
+    variantConds.push(inArray(productVariants.ram, filters.ramSlugs));
   }
   if (hasColor) {
     variantConds.push(inArray(productVariants.colorId, db
@@ -110,36 +109,38 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
       productId: productVariants.productId,
       price: sql<number>`${productVariants.price}::numeric`.as("price"),
       colorId: productVariants.colorId,
-      sizeId: productVariants.sizeId,
+      storageId: productVariants.storageId,
+      ram: productVariants.ram,
     })
     .from(productVariants)
     .where(variantConds.length ? and(...variantConds) : undefined)
     .as("v");
+
   const imagesJoin = hasColor
     ? db
-        .select({
-          productId: productImages.productId,
-          url: productImages.url,
-          rn: sql<number>`row_number() over (partition by ${productImages.productId} order by ${productImages.isPrimary} desc, ${productImages.sortOrder} asc)`.as("rn"),
-        })
-        .from(productImages)
-        .innerJoin(productVariants, eq(productVariants.id, productImages.variantId))
-        .where(
-          inArray(
-            productVariants.colorId,
-            db.select({ id: colors.id }).from(colors).where(inArray(colors.slug, filters.colorSlugs))
-          )
+      .select({
+        productId: productImages.productId,
+        url: productImages.url,
+        rn: sql<number>`row_number() over (partition by ${productImages.productId} order by ${productImages.isPrimary} desc, ${productImages.sortOrder} asc)`.as("rn"),
+      })
+      .from(productImages)
+      .innerJoin(productVariants, eq(productVariants.id, productImages.variantId))
+      .where(
+        inArray(
+          productVariants.colorId,
+          db.select({ id: colors.id }).from(colors).where(inArray(colors.slug, filters.colorSlugs))
         )
-        .as("pi")
+      )
+      .as("pi")
     : db
-        .select({
-          productId: productImages.productId,
-          url: productImages.url,
-          rn: sql<number>`row_number() over (partition by ${productImages.productId} order by ${productImages.isPrimary} desc, ${productImages.sortOrder} asc)`.as("rn"),
-        })
-        .from(productImages)
-        .where(isNull(productImages.variantId))
-        .as("pi")
+      .select({
+        productId: productImages.productId,
+        url: productImages.url,
+        rn: sql<number>`row_number() over (partition by ${productImages.productId} order by ${productImages.isPrimary} desc, ${productImages.sortOrder} asc)`.as("rn"),
+      })
+      .from(productImages)
+      .where(isNull(productImages.variantId))
+      .as("pi");
 
 
   const baseWhere = conds.length ? and(...conds) : undefined;
@@ -155,8 +156,8 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
     filters.sort === "price_asc"
       ? asc(sql`min(${variantJoin.price})`)
       : filters.sort === "price_desc"
-      ? desc(sql`max(${variantJoin.price})`)
-      : desc(products.createdAt);
+        ? desc(sql`max(${variantJoin.price})`)
+        : desc(products.createdAt);
 
   const page = Math.max(1, filters.page);
   const limit = Math.max(1, Math.min(filters.limit, 60));
@@ -167,7 +168,7 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
       id: products.id,
       name: products.name,
       createdAt: products.createdAt,
-      subtitle: genders.label,
+      subtitle: brands.name,
       minPrice: priceAgg.minPrice,
       maxPrice: priceAgg.maxPrice,
       imageUrl: imageAgg,
@@ -175,21 +176,20 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
     .from(products)
     .leftJoin(variantJoin, eq(variantJoin.productId, products.id))
     .leftJoin(imagesJoin, eq(imagesJoin.productId, products.id))
-    .leftJoin(genders, eq(genders.id, products.genderId))
     .leftJoin(brands, eq(brands.id, products.brandId))
     .leftJoin(categories, eq(categories.id, products.categoryId))
     .where(baseWhere)
-    .groupBy(products.id, products.name, products.createdAt, genders.label)
+    .groupBy(products.id, products.name, products.createdAt, brands.name)
     .orderBy(primaryOrder, desc(products.createdAt), asc(products.id))
     .limit(limit)
     .offset(offset);
+
   const countRows = await db
     .select({
       cnt: count(sql<number>`distinct ${products.id}`),
     })
     .from(products)
     .leftJoin(variantJoin, eq(variantJoin.productId, products.id))
-    .leftJoin(genders, eq(genders.id, products.genderId))
     .leftJoin(brands, eq(brands.id, products.brandId))
     .leftJoin(categories, eq(categories.id, products.categoryId))
     .where(baseWhere);
@@ -201,7 +201,7 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
     minPrice: r.minPrice === null ? null : Number(r.minPrice),
     maxPrice: r.maxPrice === null ? null : Number(r.maxPrice),
     createdAt: r.createdAt,
-    subtitle: r.subtitle ? `${r.subtitle} Shoes` : null,
+    subtitle: r.subtitle,
   }));
 
   const totalCount = countRows[0]?.cnt ?? 0;
@@ -213,12 +213,11 @@ export type FullProduct = {
   product: SelectProduct & {
     brand?: SelectBrand | null;
     category?: SelectCategory | null;
-    gender?: SelectGender | null;
   };
   variants: Array<
     SelectVariant & {
       color?: SelectColor | null;
-      size?: SelectSize | null;
+      storage?: SelectStorage | null;
     }
   >;
   images: SelectProductImage[];
@@ -232,11 +231,17 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
       productDescription: products.description,
       productBrandId: products.brandId,
       productCategoryId: products.categoryId,
-      productGenderId: products.genderId,
       isPublished: products.isPublished,
       defaultVariantId: products.defaultVariantId,
       productCreatedAt: products.createdAt,
       productUpdatedAt: products.updatedAt,
+      productModel: products.model,
+      productSpecs: products.specs,
+      productWarrantyMonths: products.warrantyMonths,
+      productReleaseYear: products.releaseYear,
+      productRamOptions: products.ramOptions,
+      productStorageOptions: products.storageOptions,
+      productColorOptions: products.colorOptions,
 
       brandId: brands.id,
       brandName: brands.name,
@@ -247,16 +252,13 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
       categoryName: categories.name,
       categorySlug: categories.slug,
 
-      genderId: genders.id,
-      genderLabel: genders.label,
-      genderSlug: genders.slug,
-
       variantId: productVariants.id,
       variantSku: productVariants.sku,
       variantPrice: sql<number | null>`${productVariants.price}::numeric`,
       variantSalePrice: sql<number | null>`${productVariants.salePrice}::numeric`,
       variantColorId: productVariants.colorId,
-      variantSizeId: productVariants.sizeId,
+      variantStorageId: productVariants.storageId,
+      variantRam: productVariants.ram,
       variantInStock: productVariants.inStock,
 
       colorId: colors.id,
@@ -264,10 +266,10 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
       colorSlug: colors.slug,
       colorHex: colors.hexCode,
 
-      sizeId: sizes.id,
-      sizeName: sizes.name,
-      sizeSlug: sizes.slug,
-      sizeSortOrder: sizes.sortOrder,
+      storageId: storage.id,
+      storageName: storage.name,
+      storageSlug: storage.slug,
+      storageSortOrder: storage.sortOrder,
 
       imageId: productImages.id,
       imageUrl: productImages.url,
@@ -278,10 +280,9 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
     .from(products)
     .leftJoin(brands, eq(brands.id, products.brandId))
     .leftJoin(categories, eq(categories.id, products.categoryId))
-    .leftJoin(genders, eq(genders.id, products.genderId))
     .leftJoin(productVariants, eq(productVariants.productId, products.id))
     .leftJoin(colors, eq(colors.id, productVariants.colorId))
-    .leftJoin(sizes, eq(sizes.id, productVariants.sizeId))
+    .leftJoin(storage, eq(storage.id, productVariants.storageId))
     .leftJoin(productImages, eq(productImages.productId, products.id))
     .where(eq(products.id, productId));
 
@@ -292,40 +293,38 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
   const product: SelectProduct & {
     brand?: SelectBrand | null;
     category?: SelectCategory | null;
-    gender?: SelectGender | null;
   } = {
     id: head.productId,
     name: head.productName,
     description: head.productDescription,
     brandId: head.productBrandId ?? null,
     categoryId: head.productCategoryId ?? null,
-    genderId: head.productGenderId ?? null,
     isPublished: head.isPublished,
     defaultVariantId: head.defaultVariantId ?? null,
     createdAt: head.productCreatedAt,
     updatedAt: head.productUpdatedAt,
+    model: head.productModel ?? null,
+    specs: head.productSpecs,
+    warrantyMonths: head.productWarrantyMonths ?? null,
+    releaseYear: head.productReleaseYear ?? null,
+    ramOptions: head.productRamOptions,
+    storageOptions: head.productStorageOptions,
+    colorOptions: head.productColorOptions,
     brand: head.brandId
       ? {
-          id: head.brandId,
-          name: head.brandName!,
-          slug: head.brandSlug!,
-          logoUrl: head.brandLogoUrl ?? null,
-        }
+        id: head.brandId,
+        name: head.brandName!,
+        slug: head.brandSlug!,
+        logoUrl: head.brandLogoUrl ?? null,
+      }
       : null,
     category: head.categoryId
       ? {
-          id: head.categoryId,
-          name: head.categoryName!,
-          slug: head.categorySlug!,
-          parentId: null,
-        }
-      : null,
-    gender: head.genderId
-      ? {
-          id: head.genderId,
-          label: head.genderLabel!,
-          slug: head.genderSlug!,
-        }
+        id: head.categoryId,
+        name: head.categoryName!,
+        slug: head.categorySlug!,
+        parentId: null,
+      }
       : null,
   };
 
@@ -341,26 +340,27 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
         price: r.variantPrice !== null ? String(r.variantPrice) : "0",
         salePrice: r.variantSalePrice !== null ? String(r.variantSalePrice) : null,
         colorId: r.variantColorId!,
-        sizeId: r.variantSizeId!,
+        storageId: r.variantStorageId!,
+        ram: r.variantRam,
         inStock: r.variantInStock!,
         weight: null,
         dimensions: null,
         createdAt: head.productCreatedAt,
         color: r.colorId
           ? {
-              id: r.colorId,
-              name: r.colorName!,
-              slug: r.colorSlug!,
-              hexCode: r.colorHex!,
-            }
+            id: r.colorId,
+            name: r.colorName!,
+            slug: r.colorSlug!,
+            hexCode: r.colorHex!,
+          }
           : null,
-        size: r.sizeId
+        storage: r.storageId
           ? {
-              id: r.sizeId,
-              name: r.sizeName!,
-              slug: r.sizeSlug!,
-              sortOrder: r.sizeSortOrder!,
-            }
+            id: r.storageId,
+            name: r.storageName!,
+            slug: r.storageSlug!,
+            sortOrder: r.storageSortOrder!,
+          }
           : null,
       });
     }
@@ -382,6 +382,7 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
     images: Array.from(imagesMap.values()),
   };
 }
+
 export type Review = {
   id: string;
   author: string;
@@ -430,7 +431,6 @@ export async function getRecommendedProducts(productId: string): Promise<Recomme
       id: products.id,
       categoryId: products.categoryId,
       brandId: products.brandId,
-      genderId: products.genderId,
     })
     .from(products)
     .where(eq(products.id, productId))
@@ -460,8 +460,7 @@ export async function getRecommendedProducts(productId: string): Promise<Recomme
 
   const priority = sql<number>`
     (case when ${products.categoryId} is not null and ${products.categoryId} = ${b.categoryId} then 1 else 0 end) * 3 +
-    (case when ${products.brandId} is not null and ${products.brandId} = ${b.brandId} then 1 else 0 end) * 2 +
-    (case when ${products.genderId} is not null and ${products.genderId} = ${b.genderId} then 1 else 0 end) * 1
+    (case when ${products.brandId} is not null and ${products.brandId} = ${b.brandId} then 1 else 0 end) * 2
   `;
 
   const rows = await db

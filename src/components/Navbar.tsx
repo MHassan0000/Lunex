@@ -5,24 +5,28 @@ import Link from "next/link";
 import { useState } from "react";
 
 const NAV_LINKS = [
-  { label: "Men", href: "/products?gender=men" },
-  { label: "Women", href: "/products?gender=women" },
-  { label: "Kids", href: "/products?gender=unisex" },
-  { label: "Collections", href: "/collections" },
-  { label: "Contact", href: "/contact" },
+  { label: "Smartphones", href: "/products?category=smartphones" },
+  { label: "Laptops", href: "/products?category=laptops" },
+  { label: "Audio", href: "/products?category=headphones" },
+  { label: "Wearables", href: "/products?category=smartwatches" },
+  { label: "Accessories", href: "/products?category=accessories" },
 ] as const;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-light-100">
+    <header className="sticky top-0 z-50 bg-[--color-dark-950]/80 backdrop-blur-md border-b border-[--color-dark-700]">
       <nav
         className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Primary"
       >
-        <Link href="/" aria-label="Nike Home" className="flex items-center">
-          <Image src="/logo.svg" alt="Nike" width={28} height={28} priority className="invert" />
+        <Link href="/" aria-label="Lunex Home" className="flex items-center gap-2 group">
+          <div className="relative h-8 w-8 overflow-hidden rounded-full border border-[--color-neon-blue] shadow-[0_0_10px_rgba(0,243,255,0.3)]">
+            <div className="absolute inset-0 bg-[--color-neon-blue]/20"></div>
+            <span className="absolute inset-0 flex items-center justify-center font-rajdhani font-bold text-[--color-neon-blue]">L</span>
+          </div>
+          <span className="font-rajdhani text-2xl font-bold tracking-wider text-white group-hover:text-glow transition-all">LUNEX</span>
         </Link>
 
         <ul className="hidden items-center gap-8 md:flex">
@@ -30,7 +34,7 @@ export default function Navbar() {
             <li key={l.href}>
               <Link
                 href={l.href}
-                className="text-body text-dark-900 transition-colors hover:text-dark-700"
+                className="text-sm font-medium uppercase tracking-widest text-[--color-light-300] transition-colors hover:text-[--color-neon-blue] hover:text-glow"
               >
                 {l.label}
               </Link>
@@ -39,47 +43,51 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-6 md:flex">
-          <button className="text-body text-dark-900 transition-colors hover:text-dark-700">
-            Search
+          <button className="text-[--color-light-300] transition-colors hover:text-white hover:text-glow">
+            <span className="sr-only">Search</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </button>
-          <button className="text-body text-dark-900 transition-colors hover:text-dark-700">
-            My Cart (2)
+          <button className="text-[--color-light-300] transition-colors hover:text-[--color-neon-green] hover:text-glow flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span className="font-rajdhani font-bold">CART (2)</span>
           </button>
         </div>
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md p-2 md:hidden"
+          className="inline-flex items-center justify-center rounded-md p-2 text-[--color-light-300] hover:text-white md:hidden"
           aria-controls="mobile-menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
         >
           <span className="sr-only">Toggle navigation</span>
-          <span className="mb-1 block h-0.5 w-6 bg-dark-900"></span>
-          <span className="mb-1 block h-0.5 w-6 bg-dark-900"></span>
-          <span className="block h-0.5 w-6 bg-dark-900"></span>
+          <div className="flex flex-col gap-1.5">
+            <span className={`block h-0.5 w-6 bg-current transition-transform ${open ? "rotate-45 translate-y-2" : ""}`}></span>
+            <span className={`block h-0.5 w-6 bg-current transition-opacity ${open ? "opacity-0" : ""}`}></span>
+            <span className={`block h-0.5 w-6 bg-current transition-transform ${open ? "-rotate-45 -translate-y-2" : ""}`}></span>
+          </div>
         </button>
       </nav>
 
       <div
         id="mobile-menu"
-        className={`border-t border-light-300 md:hidden ${open ? "block" : "hidden"}`}
+        className={`border-t border-[--color-dark-700] bg-[--color-dark-900] md:hidden ${open ? "block" : "hidden"}`}
       >
         <ul className="space-y-2 px-4 py-3">
           {NAV_LINKS.map((l) => (
             <li key={l.href}>
               <Link
                 href={l.href}
-                className="block py-2 text-body text-dark-900 hover:text-dark-700"
+                className="block py-2 text-base font-medium text-[--color-light-300] hover:text-[--color-neon-blue]"
                 onClick={() => setOpen(false)}
               >
                 {l.label}
               </Link>
             </li>
           ))}
-          <li className="flex items-center justify-between pt-2">
-            <button className="text-body">Search</button>
-            <button className="text-body">My Cart (2)</button>
+          <li className="flex items-center justify-between pt-4 border-t border-[--color-dark-700] mt-2">
+            <button className="text-[--color-light-300]">Search</button>
+            <button className="text-[--color-neon-green]">Cart (2)</button>
           </li>
         </ul>
       </div>

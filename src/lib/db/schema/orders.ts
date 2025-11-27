@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, uuid, timestamp, numeric, integer } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, uuid, timestamp, numeric, integer, text, jsonb } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { z } from 'zod';
 import { users } from './user';
@@ -23,6 +23,9 @@ export const orderItems = pgTable('order_items', {
   productVariantId: uuid('product_variant_id').references(() => productVariants.id, { onDelete: 'restrict' }).notNull(),
   quantity: integer('quantity').notNull().default(1),
   priceAtPurchase: numeric('price_at_purchase', { precision: 10, scale: 2 }).notNull(),
+  serialNumber: text('serial_number'), // Optional serial number for the specific unit
+  warrantyInfo: jsonb('warranty_info'), // Snapshot of warranty details
+  specsSnapshot: jsonb('specs_snapshot'), // Snapshot of variant specs at time of purchase
 });
 
 export const ordersRelations = relations(orders, ({ many, one }) => ({
@@ -71,6 +74,9 @@ export const insertOrderItemSchema = z.object({
   productVariantId: z.string().uuid(),
   quantity: z.number().int().min(1),
   priceAtPurchase: z.number(),
+  serialNumber: z.string().optional().nullable(),
+  warrantyInfo: z.record(z.any()).optional().nullable(),
+  specsSnapshot: z.record(z.any()).optional().nullable(),
 });
 export const selectOrderItemSchema = insertOrderItemSchema.extend({
   id: z.string().uuid(),

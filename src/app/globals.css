@@ -1,67 +1,76 @@
 @import "tailwindcss";
 
-
-body,html{
-  margin : 0;
-  padding : 0;
-  background-color: black;
-  color: white;
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-dark-950);
+  color: var(--color-light-100);
+  font-family: var(--font-outfit);
 }
 
 @theme {
-  /* Dark shades */
-  --color-dark-900: #111111;
-  --color-dark-700: #757575;
-  --color-dark-500: #aaaaaa;
+  /* Dark RPG Palette */
+  --color-dark-950: #050505; /* Deepest Black */
+  --color-dark-900: #0a0a0a; /* Background */
+  --color-dark-800: #121212; /* Card Bg */
+  --color-dark-700: #2a2a2a; /* Borders */
+  --color-dark-500: #555555; /* Muted Text */
+
+  /* Neon Accents */
+  --color-neon-blue: #00f3ff; /* Cyber Blue */
+  --color-neon-purple: #bc13fe; /* Cyber Purple */
+  --color-neon-green: #0aff68; /* Cyber Green */
+  --color-neon-red: #ff003c; /* Cyber Red */
 
   /* Light shades */
   --color-light-100: #ffffff;
-  --color-light-200: #f5f5f5;
-  --color-light-300: #e5e5e5;
-  --color-light-400: #cccccc;
-
-  /* Supporting colors */
-  --color-green: #007d48;
-  --color-red: #d33918;
-  --color-orange: #d37918;
+  --color-light-200: #e0e0e0;
+  --color-light-300: #a0a0a0;
 
   /* Font family */
-  --font-jost: "Jost", sans-serif;
+  --font-outfit: "Outfit", sans-serif;
+  --font-rajdhani: "Rajdhani", sans-serif; /* Tech headers */
 
   /* Heading sizes */
-  --text-heading-1: 72px;
-  --text-heading-1--line-height: 78px;
+  --text-heading-1: 64px;
+  --text-heading-1--line-height: 1.1;
   --text-heading-1--font-weight: 700;
 
-  --text-heading-2: 56px;
-  --text-heading-2--line-height: 60px;
+  --text-heading-2: 48px;
+  --text-heading-2--line-height: 1.2;
   --text-heading-2--font-weight: 700;
 
   --text-heading-3: 24px;
-  --text-heading-3--line-height: 30px;
-  --text-heading-3--font-weight: 500;
-
-  /* Lead */
-  --text-lead: 20px;
-  --text-lead--line-height: 28px;
-  --text-lead--font-weight: 500;
+  --text-heading-3--line-height: 1.3;
+  --text-heading-3--font-weight: 600;
 
   /* Body */
   --text-body: 16px;
-  --text-body--line-height: 24px;
+  --text-body--line-height: 1.6;
   --text-body--font-weight: 400;
 
   --text-body-medium: 16px;
-  --text-body-medium--line-height: 24px;
+  --text-body-medium--line-height: 1.6;
   --text-body-medium--font-weight: 500;
 
   /* Caption */
   --text-caption: 14px;
-  --text-caption--line-height: 20px;
-  --text-caption--font-weight: 500;
+  --text-caption--line-height: 1.5;
+  --text-caption--font-weight: 400;
+}
 
-  /* Footnote */
-  --text-footnote: 12px;
-  --text-footnote--line-height: 18px;
-  --text-footnote--font-weight: 400;
+/* Custom Utilities */
+.glass-panel {
+  background: rgba(18, 18, 18, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.neon-border {
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+  border: 1px solid var(--color-neon-blue);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
 }
