@@ -163,7 +163,9 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
   const limit = Math.max(1, Math.min(filters.limit, 60));
   const offset = (page - 1) * limit;
 
-  const rows = await db
+  const hasVariantFilters = variantConds.length > 0;
+
+  let query = db
     .select({
       id: products.id,
       name: products.name,
@@ -173,8 +175,15 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
       maxPrice: priceAgg.maxPrice,
       imageUrl: imageAgg,
     })
-    .from(products)
-    .leftJoin(variantJoin, eq(variantJoin.productId, products.id))
+    .from(products);
+
+  if (hasVariantFilters) {
+    query = query.innerJoin(variantJoin, eq(variantJoin.productId, products.id)) as any;
+  } else {
+    query = query.leftJoin(variantJoin, eq(variantJoin.productId, products.id)) as any;
+  }
+
+  const rows = await query
     .leftJoin(imagesJoin, eq(imagesJoin.productId, products.id))
     .leftJoin(brands, eq(brands.id, products.brandId))
     .leftJoin(categories, eq(categories.id, products.categoryId))
@@ -184,12 +193,19 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
     .limit(limit)
     .offset(offset);
 
-  const countRows = await db
+  let countQuery = db
     .select({
       cnt: count(sql<number>`distinct ${products.id}`),
     })
-    .from(products)
-    .leftJoin(variantJoin, eq(variantJoin.productId, products.id))
+    .from(products);
+
+  if (hasVariantFilters) {
+    countQuery = countQuery.innerJoin(variantJoin, eq(variantJoin.productId, products.id)) as any;
+  } else {
+    countQuery = countQuery.leftJoin(variantJoin, eq(variantJoin.productId, products.id)) as any;
+  }
+
+  const countRows = await countQuery
     .leftJoin(brands, eq(brands.id, products.brandId))
     .leftJoin(categories, eq(categories.id, products.categoryId))
     .where(baseWhere);

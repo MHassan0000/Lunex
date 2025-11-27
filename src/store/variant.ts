@@ -14,6 +14,12 @@ type State = {
   getSelection: (productId: string) => VariantSelection;
 };
 
+const DEFAULT_SELECTION: VariantSelection = {
+  storage: null,
+  ram: null,
+  color: null,
+};
+
 export const useVariantStore = create<State>((set, get) => ({
   selections: {},
   setSelection: (productId, key, value) =>
@@ -21,12 +27,12 @@ export const useVariantStore = create<State>((set, get) => ({
       selections: {
         ...s.selections,
         [productId]: {
-          ...(s.selections[productId] || { storage: null, ram: null, color: null }),
+          ...(s.selections[productId] || DEFAULT_SELECTION),
           [key]: value,
         },
       },
     })),
   getSelection: (productId) => {
-    return get().selections[productId] || { storage: null, ram: null, color: null };
+    return get().selections[productId] || DEFAULT_SELECTION;
   },
 }));

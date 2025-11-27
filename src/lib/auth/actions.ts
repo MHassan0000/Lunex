@@ -1,10 +1,10 @@
 "use server";
 
-import {cookies, headers} from "next/headers";
+import { cookies, headers } from "next/headers";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { guests } from "@/lib/db/schema/index";
+import { guests, carts, cartItems } from "@/lib/db/schema/index";
 import { and, eq, lt } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
@@ -133,6 +133,62 @@ async function migrateGuestToUser() {
   const token = (await cookieStore).get("guest_session")?.value;
   if (!token) return;
 
+  // 1. Find guest and their cart
+  const guest = await db.query.guests.findFirst({
+    where: eq(guests.sessionToken, token),
+  });
+  if (!guest) return;
+
+  const guestCart = await db.query.carts.findFirst({
+    where: eq(carts.guestId, guest.id),
+    with: {
+      items: true,
+    },
+  });
+
+  // 2. Get current user
+  const user = await getCurrentUser();
+  if (!user) return; // Should not happen if called after login
+
+  // 3. Find or create user cart
+  let userCart = await db.query.carts.findFirst({
+    where: eq(carts.userId, user.id),
+    with: {
+      items: true,
+    },
+  });
+
+  if (!userCart) {
+    const [newCart] = await db.insert(carts).values({ userId: user.id }).returning();
+    userCart = { ...newCart, items: [] };
+  }
+
+  // 4. Merge items
+  if (guestCart && guestCart.items.length > 0) {
+    for (const guestItem of guestCart.items) {
+      const existingUserItem = userCart.items.find(
+        (ui) => ui.productVariantId === guestItem.productVariantId
+      );
+
+      if (existingUserItem) {
+        // Update quantity
+        await db
+          .update(cartItems)
+          .set({ quantity: existingUserItem.quantity + guestItem.quantity })
+          .where(eq(cartItems.id, existingUserItem.id));
+      } else {
+        // Move item to user cart
+        await db
+          .update(cartItems)
+          .set({ cartId: userCart.id })
+          .where(eq(cartItems.id, guestItem.id));
+      }
+    }
+    // Delete guest cart (items moved or not needed anymore)
+    await db.delete(carts).where(eq(carts.id, guestCart.id));
+  }
+
+  // 5. Cleanup guest session
   await db.delete(guests).where(eq(guests.sessionToken, token));
   (await cookieStore).delete("guest_session");
 }

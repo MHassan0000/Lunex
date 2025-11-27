@@ -27,9 +27,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-12">
           <div className="flex flex-col items-start gap-4 md:col-span-4">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="relative h-8 w-8 overflow-hidden rounded-full border border-[--color-neon-blue] shadow-[0_0_10px_rgba(0,243,255,0.3)]">
-                <div className="absolute inset-0 bg-[--color-neon-blue]/20"></div>
-                <span className="absolute inset-0 flex items-center justify-center font-rajdhani font-bold text-[--color-neon-blue]">L</span>
+              <div>
+                <Image src="/images/circuit1.png" alt="logo" width={50} height={50} />
               </div>
               <span className="font-rajdhani text-2xl font-bold tracking-wider text-white">LUNEX</span>
             </Link>
