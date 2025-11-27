@@ -75,8 +75,8 @@ export const insertOrderItemSchema = z.object({
   quantity: z.number().int().min(1),
   priceAtPurchase: z.number(),
   serialNumber: z.string().optional().nullable(),
-  warrantyInfo: z.record(z.any()).optional().nullable(),
-  specsSnapshot: z.record(z.any()).optional().nullable(),
+  warrantyInfo: z.record(z.string(), z.any()).optional().nullable(),
+  specsSnapshot: z.record(z.string(), z.any()).optional().nullable(),
 });
 export const selectOrderItemSchema = insertOrderItemSchema.extend({
   id: z.string().uuid(),

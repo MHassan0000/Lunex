@@ -40,7 +40,7 @@ export const insertProductSchema = z.object({
   categoryId: z.string().uuid().optional().nullable(),
   brandId: z.string().uuid().optional().nullable(),
   model: z.string().optional(),
-  specs: z.record(z.any()).optional(),
+  specs: z.record(z.string(), z.any()).optional(),
   storageOptions: z.array(z.string()).optional(),
   ramOptions: z.array(z.string()).optional(),
   colorOptions: z.array(z.string()).optional(),
