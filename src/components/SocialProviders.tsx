@@ -11,7 +11,7 @@ export default function SocialProviders({ variant = "sign-in" }: Props) {
       callbackURL: "/",
     }, {
       onSuccess: () => {
-        toast.success(`Signed in with ${provider}`);
+        // toast.success(`Signed in with ${provider}`);
       },
       onError: (ctx) => {
         toast.error(ctx.error.message);

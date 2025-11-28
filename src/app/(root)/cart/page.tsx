@@ -15,9 +15,9 @@ export default async function CartPage() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <h1 className="mb-8 font-rajdhani text-4xl font-bold text-white text-center">Your Cart</h1>
 
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_380px]">
+                <div className={items.length > 0 ? "grid grid-cols-1 gap-8 lg:grid-cols-[1fr_380px]" : "flex justify-center"}>
                     {/* Cart Items */}
-                    <section className="animate-slide-up" style={{ animationDelay: "0.1s" }}>
+                    <section className={`animate-slide-up ${items.length === 0 ? "w-full max-w-2xl" : ""}`} style={{ animationDelay: "0.1s" }}>
                         <CartList initialItems={items} />
                     </section>
 
