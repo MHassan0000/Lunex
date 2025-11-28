@@ -66,7 +66,7 @@ export default function CartList({ initialItems }: Props) {
         return (
             <div className="rounded-xl border border-[--color-dark-700] bg-[--color-dark-800] p-12 text-center">
                 <h2 className="font-rajdhani text-2xl font-bold text-white">Your cart is empty</h2>
-                <p className="mt-2 text-[--color-dark-500]">Looks like you haven't added any gear yet.</p>
+                <p className="mt-2 text-[--color-dark-500]">Looks like you haven&apos;t added any gear yet.</p>
                 <Link
                     href="/products"
                     className="mt-6 inline-block rounded-md bg-[--color-neon-blue] px-6 py-3 font-bold text-black transition hover:bg-white hover:shadow-[0_0_15px_rgba(0,243,255,0.5)]"
