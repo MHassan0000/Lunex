@@ -10,7 +10,6 @@ import { Loader2 } from "lucide-react";
 type Props = {
   mode: "sign-in" | "sign-up";
 };
-
 export default function AuthForm({ mode }: Props) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);

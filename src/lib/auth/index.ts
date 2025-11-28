@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema/index";
 import { v4 as uuidv4 } from "uuid";
-import {nextCookies} from "better-auth/next-js";
+import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -19,7 +19,16 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
   },
-  socialProviders: {},
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+  },
   sessions: {
     cookieCache: {
       enabled: true,
