@@ -27,10 +27,17 @@ export default function ProductGallery({
   initialVariantIndex = 0,
   className = "",
 }: ProductGalleryProps) {
-  const validVariants = useMemo(
-    () => variants.filter((v) => Array.isArray(v.images) && v.images.some(isValidSrc)),
-    [variants]
-  );
+  const validVariants = useMemo(() => {
+    const unique = new Map<string, Variant>();
+    variants.forEach((v) => {
+      if (Array.isArray(v.images) && v.images.some(isValidSrc)) {
+        if (!unique.has(v.color)) {
+          unique.set(v.color, v);
+        }
+      }
+    });
+    return Array.from(unique.values());
+  }, [variants]);
 
   const selection = useVariantStore((s) => s.getSelection(productId));
   const selectedColor = selection.color;
@@ -49,27 +56,50 @@ export default function ProductGallery({
     setActiveIndex(0);
   }, [variantIndex]);
 
+  const setSelection = useVariantStore((s) => s.setSelection);
+
   const go = useCallback(
     (dir: -1 | 1) => {
       if (images.length === 0) return;
-      setActiveIndex((i) => {
-        const next = i + dir;
-        if (next < 0) return images.length - 1;
-        if (next >= images.length) return 0;
-        return next;
-      });
+
+      const next = activeIndex + dir;
+
+      // 1. Within bounds of current variant
+      if (next >= 0 && next < images.length) {
+        setActiveIndex(next);
+        return;
+      }
+
+      // 2. Switch Variant
+      const nextVariantIdx = variantIndex + dir;
+      if (nextVariantIdx >= 0 && nextVariantIdx < validVariants.length) {
+        const nextVariant = validVariants[nextVariantIdx];
+        setSelection(productId, "color", nextVariant.color);
+        return;
+      }
+
+      // 3. Loop variants (if multiple)
+      if (validVariants.length > 1) {
+        if (dir === 1) {
+          // Loop to first variant
+          setSelection(productId, "color", validVariants[0].color);
+        } else {
+          // Loop to last variant
+          setSelection(productId, "color", validVariants[validVariants.length - 1].color);
+        }
+        return;
+      }
+
+      // 4. Loop within single variant (fallback)
+      if (next < 0) setActiveIndex(images.length - 1);
+      else if (next >= images.length) setActiveIndex(0);
     },
-    [images.length]
+    [activeIndex, images.length, variantIndex, validVariants, productId, setSelection]
   );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!mainRef.current) return;
-      // Only handle if gallery is focused or contained focus? 
-      // Or maybe just global if hovering? 
-      // Let's keep it simple: if user is interacting with gallery.
-      // For now, let's remove strict focus check to allow easier testing, 
-      // or ensure the container is focusable.
       if (e.key === "ArrowLeft") go(-1);
       if (e.key === "ArrowRight") go(1);
     };
@@ -86,8 +116,8 @@ export default function ProductGallery({
             aria-label={`Thumbnail ${i + 1}`}
             onClick={() => setActiveIndex(i)}
             className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${i === activeIndex
-                ? "border-[--color-neon-blue] shadow-[0_0_10px_rgba(0,243,255,0.3)]"
-                : "border-[--color-dark-700] hover:border-[--color-light-300]"
+              ? "border-[--color-neon-blue] shadow-[0_0_10px_rgba(0,243,255,0.3)]"
+              : "border-[--color-dark-700] hover:border-[--color-light-300]"
               }`}
           >
             <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="64px" className="object-cover" />
@@ -99,11 +129,12 @@ export default function ProductGallery({
         {images.length > 0 ? (
           <>
             <Image
+              key={`${productId}-${variantIndex}-${activeIndex}`}
               src={images[activeIndex]}
               alt="Product image"
               fill
               sizes="(min-width:1024px) 720px, 100vw"
-              className="object-contain p-4"
+              className="object-contain p-4 animate-fade-in"
               priority
             />
 

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Check } from "lucide-react";
 import { useVariantStore } from "@/store/variant";
+import { useMemo } from "react";
 
 type Variant = { color: string; images: string[] };
 
@@ -21,9 +22,19 @@ export default function ColorSwatches({ productId, variants, className = "" }: C
   const selection = useVariantStore((s) => s.getSelection(productId));
   const selectedColor = selection.color;
 
+  // Deduplicate variants by color
+  const uniqueColorVariants = useMemo(() => {
+    const seen = new Set<string>();
+    return variants.filter((v) => {
+      if (seen.has(v.color)) return false;
+      seen.add(v.color);
+      return true;
+    });
+  }, [variants]);
+
   return (
     <div className={`flex flex-wrap gap-3 ${className}`} role="listbox" aria-label="Choose color">
-      {variants.map((v, i) => {
+      {uniqueColorVariants.map((v, i) => {
         const src = firstValidImage(v.images);
         if (!src) return null;
         const isActive = selectedColor === v.color;

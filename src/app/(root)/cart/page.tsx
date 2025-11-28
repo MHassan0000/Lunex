@@ -42,7 +42,7 @@ export default async function CartPage() {
                                 <span>${total.toFixed(2)}</span>
                             </div>
 
-                            <button className="flex w-full items-center justify-center gap-2 rounded-md bg-[--color-neon-blue] px-6 py-3 font-bold text-black transition hover:bg-white hover:shadow-[0_0_15px_rgba(0,243,255,0.5)]">
+                            <button className="flex w-full items-center justify-center gap-2 rounded-md bg-[--color-neon-blue] px-6 py-3 font-bold text-white hover:text-black transition hover:bg-white hover:shadow-[0_0_15px_rgba(0,243,255,0.5)]">
                                 Checkout <ArrowRight className="h-4 w-4" />
                             </button>
 

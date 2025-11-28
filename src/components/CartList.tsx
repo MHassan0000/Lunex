@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Minus, Plus, Trash2, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/store/cart";
 
 type Props = {
     initialItems: CartItem[];
@@ -15,9 +16,14 @@ export default function CartList({ initialItems }: Props) {
     const [items, setItems] = useState(initialItems);
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
+    const incrementCart = useCartStore((state) => state.increment);
 
     const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
         if (newQuantity < 1) return;
+
+        const item = items.find(i => i.id === itemId);
+        if (!item) return;
+        const diff = newQuantity - item.quantity;
 
         // Optimistic update
         setItems((prev) =>
@@ -28,7 +34,10 @@ export default function CartList({ initialItems }: Props) {
 
         startTransition(async () => {
             const result = await updateCartItem(itemId, newQuantity);
-            if (!result.success) {
+            if (result.success) {
+                incrementCart(diff);
+                router.refresh();
+            } else {
                 // Revert on failure (simplified, ideally re-fetch)
                 router.refresh();
             }
@@ -36,12 +45,18 @@ export default function CartList({ initialItems }: Props) {
     };
 
     const handleRemoveItem = async (itemId: string) => {
+        const item = items.find(i => i.id === itemId);
+        if (!item) return;
+
         // Optimistic update
         setItems((prev) => prev.filter((item) => item.id !== itemId));
 
         startTransition(async () => {
             const result = await removeCartItem(itemId);
-            if (!result.success) {
+            if (result.success) {
+                incrementCart(-item.quantity);
+                router.refresh();
+            } else {
                 router.refresh();
             }
         });
@@ -98,7 +113,7 @@ export default function CartList({ initialItems }: Props) {
                                     </>
                                 )}
                             </div>
-                            <p className="font-medium text-[--color-light-300]">${item.price.toFixed(2)}</p>
+                            <p className="font-medium text-[--color-light-300]">${(item.price * item.quantity).toFixed(2)}</p>
                         </div>
 
                         <div className="flex items-center gap-6">

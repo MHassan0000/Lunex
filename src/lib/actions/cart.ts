@@ -67,26 +67,39 @@ async function getOrCreateCartId(): Promise<string> {
         return cart.id;
     }
 
-    const { sessionToken } = await guestSession();
-    if (!sessionToken) {
-        // Should create a guest session if one doesn't exist? 
-        // The frontend usually handles creating a guest session via middleware or on first load, 
-        // but here we might need to ensure it exists.
-        // For now, assume guest session exists if we are adding to cart.
-        throw new Error("No session found");
+    let { sessionToken } = await guestSession();
+    const { guests } = await import("@/lib/db/schema");
+
+    let guest;
+    if (sessionToken) {
+        guest = await db.query.guests.findFirst({
+            where: eq(guests.sessionToken, sessionToken),
+        });
     }
 
-    // Find guest record
-    const { guests } = await import("@/lib/db/schema");
-    let guest = await db.query.guests.findFirst({
-        where: eq(guests.sessionToken, sessionToken),
-    });
-
     if (!guest) {
-        // This shouldn't happen if guestSession() returned a token, unless it's invalid/expired but not cleaned up.
-        // But let's handle it by creating if needed or throwing.
-        // Actually, guestSession() in auth/actions.ts checks DB.
-        throw new Error("Guest session not found in DB");
+        // Create new guest session
+        sessionToken = crypto.randomUUID();
+        const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7 days
+
+        await db.insert(guests).values({
+            sessionToken,
+            expiresAt,
+        });
+
+        (await cookies()).set("guest_session", sessionToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+            maxAge: 60 * 60 * 24 * 7,
+        });
+
+        // Re-fetch guest to be sure (or just use the inserted data if we had the id, but we need the ID)
+        // Actually we can just use the ID if we returned it, but insert().values() returns... 
+        // Drizzle insert returning:
+        const [newGuest] = await db.select().from(guests).where(eq(guests.sessionToken, sessionToken));
+        guest = newGuest;
     }
 
     let cart = await db.query.carts.findFirst({
