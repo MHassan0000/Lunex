@@ -2,12 +2,13 @@ import React from "react";
 import { Card, ScrollReveal } from "@/components";
 import { getAllProducts } from "@/lib/actions/product";
 import Link from "next/link";
+import Image from "next/image";
 
 const CATEGORIES = [
-  { name: "Smartphones", slug: "smartphones" },
-  { name: "Laptops", slug: "laptops" },
-  { name: "Audio", slug: "headphones" },
-  { name: "Wearables", slug: "smartwatches" },
+  { name: "Smartphones", slug: "smartphones", image: "/images/smartphones.png" },
+  { name: "Laptops", slug: "laptops", image: "/images/laptops.png" },
+  { name: "Audio", slug: "headphones", image: "/images/audio.png" },
+  { name: "Wearables", slug: "smartwatches", image: "/images/wearables.png" },
 ];
 
 const Home = async () => {
@@ -79,8 +80,14 @@ const Home = async () => {
                 href={`/products?category=${cat.slug}`}
                 className="group relative h-48 md:h-64 lg:h-72 overflow-hidden rounded-xl md:rounded-2xl border border-[--color-dark-700] bg-[--color-dark-800] transition-all hover-lift hover:border-[--color-neon-purple] hover:shadow-[0_0_30px_rgba(188,19,254,0.3)]"
               >
-                {/* Background Pattern */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[--color-dark-800] to-[--color-dark-900]" />
+                {/* Background Image */}
+                <Image
+                  src={cat.image}
+                  alt={cat.name}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-110 opacity-50 group-hover:opacity-100"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[--color-dark-950] via-[--color-dark-900]/50 to-transparent" />
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[--color-dark-950] to-transparent p-4 md:p-6">
