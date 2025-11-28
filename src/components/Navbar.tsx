@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { User, LogOut, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import SearchOverlay from "@/components/SearchOverlay";
+import { useCartStore } from "@/store/cart";
+import { getCartCount } from "@/lib/actions/cart";
 
 const NAV_LINKS = [
   { label: "Smartphones", href: "/products?category=smartphones" },
@@ -21,6 +23,19 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { data: session } = authClient.useSession();
   const router = useRouter();
+  const { count, setCount } = useCartStore();
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const c = await getCartCount();
+        setCount(c);
+      } catch (e) {
+        console.error("Failed to fetch cart count", e);
+      }
+    };
+    fetchCount();
+  }, [setCount]);
 
   const handleSignIn = async () => {
     router.push("/sign-in");
@@ -63,7 +78,7 @@ export default function Navbar() {
             </button>
             <Link href="/cart" className="text-[--color-light-300] transition-colors hover:text-[--color-neon-green] hover:text-glow flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-              <span className="font-rajdhani font-bold">Cart</span>
+              <span className="font-rajdhani font-bold">Cart ({count})</span>
             </Link>
 
             {session ? (
@@ -129,7 +144,7 @@ export default function Navbar() {
                 <Search className="h-5 w-5 hover:scale-105" />
                 Search
               </button>
-              <Link href="/cart" className="text-[--color-neon-green] hover:scale-105">Cart</Link>
+              <Link href="/cart" className="text-[--color-neon-green] hover:scale-105">Cart ({count})</Link>
             </li>
             <li className="pt-2">
               {session ? (

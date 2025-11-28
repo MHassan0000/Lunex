@@ -2,6 +2,7 @@
 
 import { addToCart } from "@/lib/actions/cart";
 import { useVariantStore } from "@/store/variant";
+import { useCartStore } from "@/store/cart";
 import { ShoppingBag, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -23,6 +24,7 @@ type Props = {
 export default function AddToCartButton({ productId, variants }: Props) {
     const [loading, setLoading] = useState(false);
     const selection = useVariantStore((state) => state.getSelection(productId));
+    const incrementCart = useCartStore((state) => state.increment);
     const router = useRouter();
 
     const handleAddToCart = async () => {
@@ -57,7 +59,8 @@ export default function AddToCartButton({ productId, variants }: Props) {
 
         if (result.success) {
             toast.success("Added to cart");
-            router.refresh(); // Update cart count in navbar
+            incrementCart(1);
+            router.refresh();
         } else {
             toast.error(result.error || "Failed to add to cart");
         }
@@ -68,8 +71,7 @@ export default function AddToCartButton({ productId, variants }: Props) {
         <button
             onClick={handleAddToCart}
             disabled={loading}
-            className="flex items-center justify-center gap-2 rounded-md bg-[--color-neon-blue] px-6 py-4 font-rajdhani text-lg font-bold text-white
-            hover:text-black transition-all hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-blue] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 rounded-md bg-[--color-neon-blue] px-6 py-4 font-rajdhani text-lg font-bold text-black transition-all hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-blue] disabled:opacity-50 disabled:cursor-not-allowed"
         >
             {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <ShoppingBag className="h-5 w-5" />}
             Add to Cart
