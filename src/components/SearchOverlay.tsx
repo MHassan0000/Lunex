@@ -171,7 +171,7 @@ export default function SearchOverlay({ open, onClose }: Props) {
                         </div>
                     ) : query.trim() ? (
                         <div className="text-center py-20">
-                            <p className="text-xl text-[--color-dark-400]">No results found for "{query}"</p>
+                            <p className="text-xl text-[--color-dark-400]">No results found for &quot;{query}&quot;</p>
                         </div>
                     ) : (
                         <div className="text-center py-20">

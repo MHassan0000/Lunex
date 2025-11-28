@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, ScrollReveal } from "@/components";
+import { Card } from "@/components";
 import { getAllProducts } from "@/lib/actions/product";
 import Link from "next/link";
 import Image from "next/image";
@@ -74,7 +74,7 @@ const Home = async () => {
             Shop by <span className="text-[--color-neon-purple]">Category</span>
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {CATEGORIES.map((cat, i) => (
+            {CATEGORIES.map((cat) => (
               <Link
                 key={cat.slug}
                 href={`/products?category=${cat.slug}`}

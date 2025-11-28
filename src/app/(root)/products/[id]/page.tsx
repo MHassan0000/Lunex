@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Card, CollapsibleSection, ProductGallery, StoragePicker } from "@/components";
 import AddToCartButton from "@/components/AddToCartButton";
-import { Heart, ShoppingBag, Star, ShieldCheck, Calendar } from "lucide-react";
+import { Heart, Star, ShieldCheck, Calendar } from "lucide-react";
 import ColorSwatches from "@/components/ColorSwatches";
 import { getProduct, getProductReviews, getRecommendedProducts, type Review, type RecommendedProduct } from "@/lib/actions/product";
 
@@ -17,7 +17,7 @@ function NotFoundBlock() {
   return (
     <section className="mx-auto max-w-3xl rounded-xl border border-[--color-dark-700] bg-[--color-dark-800] p-8 text-center">
       <h1 className="font-rajdhani text-3xl font-bold text-white">Product not found</h1>
-      <p className="mt-2 text-[--color-dark-500]">The product you're looking for doesn't exist or may have been removed.</p>
+      <p className="mt-2 text-[--color-dark-500]">The product you&apos;re looking for doesn&apos;t exist or may have been removed.</p>
       <div className="mt-6">
         <Link
           href="/products"

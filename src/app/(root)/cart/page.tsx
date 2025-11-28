@@ -1,8 +1,7 @@
 import { getCart } from "@/lib/actions/cart";
 import CartList from "@/components/CartList";
 import CheckoutButton from "@/components/CheckoutButton";
-import Link from "next/link";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 export default async function CartPage() {
     const cart = await getCart();

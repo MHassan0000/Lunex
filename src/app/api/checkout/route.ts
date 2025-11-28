@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe/server';
 import { getCurrentUser } from '@/lib/auth/actions';
 import { getCart } from '@/lib/actions/cart';
+import Stripe from 'stripe';
 
 export async function POST(req: NextRequest) {
     try {
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
         const total = subtotal + shipping;
 
         // Create line items for Stripe
-        const lineItems: any[] = cart.items.map((item) => {
+        const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = cart.items.map((item) => {
             // Only include images if they are absolute URLs (start with http:// or https://)
             const images = item.image && (item.image.startsWith('http://') || item.image.startsWith('https://'))
                 ? [item.image]

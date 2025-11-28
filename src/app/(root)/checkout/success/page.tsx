@@ -24,7 +24,7 @@ export default function CheckoutSuccessPage() {
                         Payment Successful!
                     </h1>
                     <p className="mb-8 text-lg text-[--color-light-300]">
-                        Thank you for your order. We've received your payment and will process your order shortly.
+                        Thank you for your order. We&apos;ve received your payment and will process your order shortly.
                     </p>
 
                     {/* Order Info */}
@@ -32,7 +32,7 @@ export default function CheckoutSuccessPage() {
                         <div className="flex items-center justify-center gap-3 text-[--color-light-300]">
                             <Package className="h-5 w-5 text-[--color-neon-blue]" />
                             <p>
-                                You'll receive an email confirmation with your order details shortly.
+                                You&apos;ll receive an email confirmation with your order details shortly.
                             </p>
                         </div>
                     </div>
