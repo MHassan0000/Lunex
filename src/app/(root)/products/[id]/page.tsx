@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { Card, CollapsibleSection, ProductGallery, StoragePicker } from "@/components";
+import AddToCartButton from "@/components/AddToCartButton";
 import { Heart, ShoppingBag, Star, ShieldCheck, Calendar } from "lucide-react";
 import ColorSwatches from "@/components/ColorSwatches";
 import { getProduct, getProductReviews, getRecommendedProducts, type Review, type RecommendedProduct } from "@/lib/actions/product";
@@ -202,10 +203,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <StoragePicker productId={product.id} />
 
             <div className="flex flex-col gap-3 mt-4">
-              <button className="flex items-center justify-center gap-2 rounded-md bg-[--color-neon-blue] px-6 py-4 font-rajdhani text-lg font-bold text-black transition-all hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-blue]">
-                <ShoppingBag className="h-5 w-5" />
-                Add to Cart
-              </button>
+              <AddToCartButton productId={product.id} variants={variants} />
               <button className="flex items-center justify-center gap-2 rounded-md border border-[--color-dark-700] bg-[--color-dark-800] px-6 py-4 font-medium text-white transition hover:border-[--color-neon-purple] hover:text-[--color-neon-purple] focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-purple]">
                 <Heart className="h-5 w-5" />
                 Add to Wishlist
