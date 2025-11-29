@@ -188,16 +188,39 @@ export async function getCart(): Promise<Cart | null> {
 
 export async function addToCart(variantId: string, quantity: number) {
     try {
+        if (quantity <= 0) {
+            return { success: false, error: "Quantity must be greater than 0" };
+        }
+
         const cartId = await getOrCreateCartId();
+
+        // Check if variant exists and has stock
+        const variant = await db.query.productVariants.findFirst({
+            where: eq(productVariants.id, variantId),
+        });
+
+        if (!variant) {
+            return { success: false, error: "Product variant not found" };
+        }
 
         const existingItem = await db.query.cartItems.findFirst({
             where: and(eq(cartItems.cartId, cartId), eq(cartItems.productVariantId, variantId)),
         });
 
+        const newQuantity = existingItem ? existingItem.quantity + quantity : quantity;
+
+        // Check stock availability
+        if (newQuantity > variant.inStock) {
+            return {
+                success: false,
+                error: `Only ${variant.inStock} items available in stock`
+            };
+        }
+
         if (existingItem) {
             await db
                 .update(cartItems)
-                .set({ quantity: existingItem.quantity + quantity })
+                .set({ quantity: newQuantity })
                 .where(eq(cartItems.id, existingItem.id));
         } else {
             await db.insert(cartItems).values({
@@ -217,9 +240,32 @@ export async function addToCart(variantId: string, quantity: number) {
 
 export async function updateCartItem(itemId: string, quantity: number) {
     try {
-        if (quantity <= 0) {
+        if (quantity < 0) {
+            return { success: false, error: "Quantity cannot be negative" };
+        }
+
+        if (quantity === 0) {
             await db.delete(cartItems).where(eq(cartItems.id, itemId));
         } else {
+            // Validate stock before updating
+            const item = await db.query.cartItems.findFirst({
+                where: eq(cartItems.id, itemId),
+                with: {
+                    variant: true,
+                },
+            });
+
+            if (!item) {
+                return { success: false, error: "Cart item not found" };
+            }
+
+            if (quantity > item.variant.inStock) {
+                return {
+                    success: false,
+                    error: `Only ${item.variant.inStock} items available`
+                };
+            }
+
             await db.update(cartItems).set({ quantity }).where(eq(cartItems.id, itemId));
         }
         revalidatePath("/cart");

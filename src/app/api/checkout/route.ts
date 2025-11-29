@@ -9,20 +9,30 @@ export async function POST(req: NextRequest) {
         // Check authentication
         const user = await getCurrentUser();
         if (!user) {
+            console.error('[Checkout] Unauthenticated checkout attempt');
             return NextResponse.json(
                 { error: 'Authentication required. Please sign in to checkout.' },
                 { status: 401 }
             );
         }
 
+        console.log('[Checkout] Processing checkout for user:', user.id);
+
         // Get cart
         const cart = await getCart();
         if (!cart || cart.items.length === 0) {
+            console.error('[Checkout] Empty cart for user:', user.id);
             return NextResponse.json(
                 { error: 'Your cart is empty' },
                 { status: 400 }
             );
         }
+
+        console.log('[Checkout] Cart retrieved:', {
+            cartId: cart.id,
+            itemCount: cart.items.length,
+            subtotal: cart.subtotal,
+        });
 
         // Calculate totals
         const subtotal = cart.subtotal;
@@ -66,6 +76,11 @@ export async function POST(req: NextRequest) {
         }
 
         // Create Stripe checkout session
+        console.log('[Checkout] Creating Stripe session with metadata:', {
+            userId: user.id,
+            cartId: cart.id,
+        });
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: lineItems,
@@ -79,9 +94,13 @@ export async function POST(req: NextRequest) {
             customer_email: user.email,
         });
 
+        console.log('[Checkout] Stripe session created:', session.id);
         return NextResponse.json({ sessionId: session.id, url: session.url });
     } catch (error) {
-        console.error('Checkout error:', error);
+        console.error('[Checkout] Error:', {
+            error: error instanceof Error ? error.message : 'Unknown error',
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: 'Failed to create checkout session' },
             { status: 500 }

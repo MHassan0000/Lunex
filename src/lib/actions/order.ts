@@ -33,7 +33,7 @@ export async function createOrderFromCheckout(
     stripeSessionId: string
 ) {
     try {
-        // Get cart items
+        // Get cart items first (outside transaction to validate)
         const items = await db.query.cartItems.findMany({
             where: eq(cartItems.cartId, cartId),
             with: {
@@ -42,58 +42,82 @@ export async function createOrderFromCheckout(
         });
 
         if (items.length === 0) {
-            throw new Error("Cart is empty");
+            console.error('Cart is empty for cartId:', cartId);
+            return { success: false, error: "Cart is empty" };
         }
 
-        // Create order
-        const [order] = await db
-            .insert(orders)
-            .values({
-                userId,
-                status: "paid",
-                totalAmount: totalAmount.toString(),
-            })
-            .returning();
+        // Validate stock availability before creating order
+        for (const item of items) {
+            if (item.variant.inStock < item.quantity) {
+                console.error(`Insufficient stock for variant ${item.productVariantId}: requested ${item.quantity}, available ${item.variant.inStock}`);
+                return {
+                    success: false,
+                    error: `Insufficient stock for ${item.variant.sku}. Only ${item.variant.inStock} available.`
+                };
+            }
+        }
 
-        // Create order items with price snapshots
-        const orderItemsData = items.map((item) => ({
-            orderId: order.id,
-            productVariantId: item.productVariantId,
-            quantity: item.quantity,
-            priceAtPurchase: item.variant.price,
-        }));
+        // Use transaction to ensure atomicity
+        const result = await db.transaction(async (tx) => {
+            // Create order
+            const [order] = await tx
+                .insert(orders)
+                .values({
+                    userId,
+                    status: "paid",
+                    totalAmount: totalAmount.toString(),
+                })
+                .returning();
 
-        await db.insert(orderItems).values(orderItemsData);
+            // Create order items with price snapshots
+            const orderItemsData = items.map((item) => ({
+                orderId: order.id,
+                productVariantId: item.productVariantId,
+                quantity: item.quantity,
+                priceAtPurchase: item.variant.price,
+            }));
 
-        // Create payment record
-        await db.insert(payments).values({
-            orderId: order.id,
-            method: "stripe",
-            status: "completed",
-            transactionId: stripeSessionId,
-            paidAt: new Date(),
+            await tx.insert(orderItems).values(orderItemsData);
+
+            // Create payment record
+            await tx.insert(payments).values({
+                orderId: order.id,
+                method: "stripe",
+                status: "completed",
+                transactionId: stripeSessionId,
+                paidAt: new Date(),
+            });
+
+            // Update product variant stock levels
+            for (const item of items) {
+                const newStock = item.variant.inStock - item.quantity;
+                if (newStock < 0) {
+                    throw new Error(`Stock would go negative for variant ${item.productVariantId}`);
+                }
+
+                await tx
+                    .update(productVariants)
+                    .set({
+                        inStock: newStock,
+                    })
+                    .where(eq(productVariants.id, item.productVariantId));
+            }
+
+            // Clear cart items
+            await tx.delete(cartItems).where(eq(cartItems.cartId, cartId));
+
+            return order.id;
         });
 
-        // Update product variant stock levels
-        for (const item of items) {
-            await db
-                .update(productVariants)
-                .set({
-                    inStock: item.variant.inStock - item.quantity,
-                })
-                .where(eq(productVariants.id, item.productVariantId));
-        }
-
-        // Clear cart items
-        await db.delete(cartItems).where(eq(cartItems.cartId, cartId));
-
         revalidatePath("/cart");
+        revalidatePath("/account");
         revalidatePath("/orders");
 
-        return { success: true, orderId: order.id };
+        console.log('Order created successfully:', result);
+        return { success: true, orderId: result };
     } catch (error) {
         console.error("Failed to create order:", error);
-        return { success: false, error: "Failed to create order" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to create order" };
     }
 }
 

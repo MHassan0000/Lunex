@@ -7,7 +7,10 @@ export async function POST(req: NextRequest) {
     const body = await req.text();
     const signature = req.headers.get('stripe-signature');
 
+    console.log('[Webhook] Received Stripe webhook request');
+
     if (!signature) {
+        console.error('[Webhook] Missing stripe-signature header');
         return NextResponse.json(
             { error: 'Missing stripe-signature header' },
             { status: 400 }
@@ -16,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     if (!webhookSecret) {
-        console.error('STRIPE_WEBHOOK_SECRET is not configured');
+        console.error('[Webhook] STRIPE_WEBHOOK_SECRET is not configured');
         return NextResponse.json(
             { error: 'Webhook secret not configured' },
             { status: 500 }
@@ -27,8 +30,9 @@ export async function POST(req: NextRequest) {
 
     try {
         event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+        console.log('[Webhook] Successfully verified signature for event:', event.type);
     } catch (err) {
-        console.error('Webhook signature verification failed:', err);
+        console.error('[Webhook] Signature verification failed:', err);
         return NextResponse.json(
             { error: 'Invalid signature' },
             { status: 400 }
@@ -41,22 +45,38 @@ export async function POST(req: NextRequest) {
             case 'checkout.session.completed': {
                 const session = event.data.object as Stripe.Checkout.Session;
 
-                console.log('Checkout session completed:', session.id);
+                console.log('[Webhook] Processing checkout.session.completed:', {
+                    sessionId: session.id,
+                    paymentStatus: session.payment_status,
+                    metadata: session.metadata,
+                });
 
                 // Extract metadata
                 const userId = session.metadata?.userId;
                 const cartId = session.metadata?.cartId;
 
                 if (!userId || !cartId) {
-                    console.error('Missing metadata in checkout session:', session.id);
+                    console.error('[Webhook] Missing metadata:', {
+                        sessionId: session.id,
+                        userId,
+                        cartId,
+                        allMetadata: session.metadata,
+                    });
                     return NextResponse.json(
-                        { error: 'Missing required metadata' },
+                        { error: 'Missing required metadata (userId or cartId)' },
                         { status: 400 }
                     );
                 }
 
                 // Get the total amount from the session
                 const totalAmount = session.amount_total ? session.amount_total / 100 : 0;
+
+                console.log('[Webhook] Creating order:', {
+                    userId,
+                    cartId,
+                    totalAmount,
+                    sessionId: session.id,
+                });
 
                 // Create order in database
                 const result = await createOrderFromCheckout(
@@ -67,31 +87,46 @@ export async function POST(req: NextRequest) {
                 );
 
                 if (!result.success) {
-                    console.error('Failed to create order:', result.error);
+                    console.error('[Webhook] Failed to create order:', {
+                        error: result.error,
+                        userId,
+                        cartId,
+                        sessionId: session.id,
+                    });
                     return NextResponse.json(
-                        { error: 'Failed to create order' },
+                        { error: 'Failed to create order', details: result.error },
                         { status: 500 }
                     );
                 }
 
-                console.log('Order created successfully:', result.orderId);
+                console.log('[Webhook] Order created successfully:', {
+                    orderId: result.orderId,
+                    sessionId: session.id,
+                });
                 break;
             }
 
             case 'payment_intent.payment_failed': {
                 const paymentIntent = event.data.object as Stripe.PaymentIntent;
-                console.error('Payment failed:', paymentIntent.id, paymentIntent.last_payment_error);
-                // You could send an email notification here or log to a monitoring service
+                console.error('[Webhook] Payment failed:', {
+                    paymentIntentId: paymentIntent.id,
+                    error: paymentIntent.last_payment_error,
+                    metadata: paymentIntent.metadata,
+                });
                 break;
             }
 
             default:
-                console.log(`Unhandled event type: ${event.type}`);
+                console.log(`[Webhook] Unhandled event type: ${event.type}`);
         }
 
         return NextResponse.json({ received: true });
     } catch (error) {
-        console.error('Error processing webhook:', error);
+        console.error('[Webhook] Error processing webhook:', {
+            error: error instanceof Error ? error.message : 'Unknown error',
+            stack: error instanceof Error ? error.stack : undefined,
+            eventType: event.type,
+        });
         return NextResponse.json(
             { error: 'Webhook processing failed' },
             { status: 500 }

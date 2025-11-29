@@ -113,7 +113,7 @@ export async function getCurrentUser() {
 
     return session?.user ?? null;
   } catch (e) {
-    console.log(e);
+    console.error('[Auth] Failed to get current user:', e instanceof Error ? e.message : e);
     return null;
   }
 }
