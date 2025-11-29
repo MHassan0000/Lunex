@@ -51,7 +51,7 @@ const Home = async () => {
         {/* Hero Content */}
         <div className="relative mx-auto flex min-h-[600px] md:min-h-[700px] max-w-7xl flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 text-center
         ">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl mt-20">
             <h1 >
               <Shuffle text="Level Up"
                 shuffleDirection="right"
