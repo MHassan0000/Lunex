@@ -3,7 +3,6 @@ import { Card } from "@/components";
 import { getAllProducts } from "@/lib/actions/product";
 import Link from "next/link";
 import Image from "next/image";
-import PixelBlast from "@/components/PixelBlast";
 import Shuffle from "@/components/Shuffle";
 import { GridScan } from "@/components/GridScan";
 
