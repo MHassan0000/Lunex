@@ -31,7 +31,7 @@ const Home = async () => {
       {/* Hero Section - extends behind navbar */}
       <section className="relative min-h-[680px] md:min-h-[780px] w-full overflow-hidden -mt-20 pt-20">
         {/* PixelBlast Animated Background */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 z-0 border-2 border-yellow-500">
           <PixelBlast
             variant="circle"
             pixelSize={6}
@@ -47,19 +47,18 @@ const Home = async () => {
             liquidStrength={0.12}
             liquidRadius={1.2}
             liquidWobbleSpeed={5}
-            speed={0.6}
+            speed={0.1}
             edgeFade={0.25}
             transparent
+            className="-translate-y-50"
           />
-          {/* Gradient overlay - lighter at top to show pixels */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[--color-dark-950]/50 to-[--color-dark-950]" />
         </div>
 
         {/* Hero Content */}
         <div className="relative mx-auto flex min-h-[600px] md:min-h-[700px] max-w-7xl flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 text-center
         ">
           <div className="max-w-3xl">
-            <h1 className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold uppercase leading-tight tracking-wider text-white">
+            <h1 >
               <Shuffle text="Level Up"
                 shuffleDirection="right"
                 duration={0.35}
@@ -70,8 +69,24 @@ const Home = async () => {
                 threshold={0.1}
                 triggerOnce={true}
                 triggerOnHover={true}
-                respectReducedMotion={true} /> <br />
-              <span className="text-[--color-neon-blue]">Your Tech</span>
+                respectReducedMotion={true}
+                className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold uppercase leading-tight tracking-wider text-white" /> <br />
+
+            </h1>
+            <h1>
+              <Shuffle text="Your Tech"
+                shuffleDirection="right"
+                duration={0.35}
+                animationMode="evenodd"
+                shuffleTimes={1}
+                ease="power3.out"
+                stagger={0.03}
+                threshold={0.1}
+                triggerOnce={true}
+                triggerOnHover={true}
+                respectReducedMotion={true}
+                className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold uppercase leading-tight tracking-wider text-white text-[--color-neon-blue]" /> <br />
+
             </h1>
             <p className="mt-4 md:mt-6 max-w-xl text-base md:text-lg text-[--color-light-300]">
               Discover cutting-edge gadgets and premium electronics. From high-performance rigs to everyday essentials.
