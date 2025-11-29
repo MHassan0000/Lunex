@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useEffect, Suspense } from "react";
 import { toast } from "sonner";
 
-export const dynamic = 'force-dynamic';
-
 function SuccessContent() {
     useEffect(() => {
         toast.success("Payment successful! Your order has been confirmed.");

@@ -4,8 +4,6 @@ import { XCircle, ArrowLeft, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export const dynamic = 'force-dynamic';
-
 function CancelContent() {
     return (
         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
