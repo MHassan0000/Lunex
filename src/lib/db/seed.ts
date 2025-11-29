@@ -7,8 +7,7 @@ import {
   type InsertProduct, type InsertVariant, type InsertProductImage,
 } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-import { mkdirSync, existsSync, cpSync } from 'fs';
-import { join, basename } from 'path';
+
 
 type ProductRow = typeof products.$inferSelect;
 type VariantRow = typeof productVariants.$inferSelect;

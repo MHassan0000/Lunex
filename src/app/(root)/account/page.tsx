@@ -5,7 +5,7 @@ import { eq, desc } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Package, Calendar, MapPin, CreditCard } from "lucide-react";
+import { Package, MapPin, CreditCard } from "lucide-react";
 import { SignOutButton } from "@/components/SignOutButton";
 
 export default async function AccountPage() {

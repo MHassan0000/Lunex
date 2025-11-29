@@ -26,31 +26,7 @@ export type Cart = {
     subtotal: number;
 };
 
-async function getCartId(): Promise<{ cartId: string | null; type: "user" | "guest" | null }> {
-    const user = await getCurrentUser();
-    if (user) {
-        const userCart = await db.query.carts.findFirst({
-            where: eq(carts.userId, user.id),
-        });
-        return { cartId: userCart?.id ?? null, type: "user" };
-    }
 
-    const { sessionToken } = await guestSession();
-    if (sessionToken) {
-        const { guests } = await import("@/lib/db/schema");
-        const guest = await db.query.guests.findFirst({
-            where: eq(guests.sessionToken, sessionToken),
-        });
-
-        if (guest) {
-            const guestCart = await db.query.carts.findFirst({
-                where: eq(carts.guestId, guest.id),
-            });
-            return { cartId: guestCart?.id ?? null, type: "guest" };
-        }
-    }
-    return { cartId: null, type: null };
-}
 
 // Helper to get or create cart
 async function getOrCreateCartId(): Promise<string> {

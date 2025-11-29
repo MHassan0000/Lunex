@@ -4,7 +4,7 @@ import { getCurrentUser } from '@/lib/auth/actions';
 import { getCart } from '@/lib/actions/cart';
 import Stripe from 'stripe';
 
-export async function POST(req: NextRequest) {
+export async function POST(_req: NextRequest) {
     try {
         // Check authentication
         const user = await getCurrentUser();
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
         // Calculate totals
         const subtotal = cart.subtotal;
         const shipping = subtotal > 100 ? 0 : 15;
-        const total = subtotal + shipping;
+
 
         // Create line items for Stripe
         const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = cart.items.map((item) => {

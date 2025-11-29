@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import { useRouter } from "next/navigation";
+
 import { useDebounce } from "use-debounce";
 import { getAllProducts } from "@/lib/actions/product";
 import Link from "next/link";
@@ -26,7 +26,7 @@ export default function SearchOverlay({ open, onClose }: Props) {
     const [debouncedQuery] = useDebounce(query, 500);
     const [results, setResults] = useState<SearchResult[]>([]);
     const [isPending, startTransition] = useTransition();
-    const router = useRouter();
+
 
     // Sync with URL on mount if needed, or just keep local
     // For this requirement: "type should automatically appear in the searchparams in the url"

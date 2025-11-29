@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
-import { User, LogOut, Search } from "lucide-react";
+import { User, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import SearchOverlay from "@/components/SearchOverlay";
 import { useCartStore } from "@/store/cart";
@@ -37,9 +37,7 @@ export default function Navbar() {
     fetchCount();
   }, [setCount]);
 
-  const handleSignIn = async () => {
-    router.push("/sign-in");
-  };
+
 
   return (
     <>
