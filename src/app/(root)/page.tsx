@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import PixelBlast from "@/components/PixelBlast";
 import Shuffle from "@/components/Shuffle";
+import { GridScan } from "@/components/GridScan";
 
 const CATEGORIES = [
   { name: "Smartphones", slug: "smartphones", image: "/images/smartphones.png" },
@@ -29,29 +30,23 @@ const Home = async () => {
   return (
     <main className="min-h-screen bg-[--color-dark-950]">
       {/* Hero Section - extends behind navbar */}
-      <section className="relative min-h-[680px] md:min-h-[780px] w-full overflow-hidden -mt-20 pt-20">
+      <section className="relative min-h-[680px] md:min-h-[1000px] w-full -mt-20 pt-20">
         {/* PixelBlast Animated Background */}
-        <div className="absolute inset-0 z-0 border-2 border-yellow-500">
-          <PixelBlast
-            variant="circle"
-            pixelSize={6}
-            color="#B19EEF"
-            patternScale={3}
-            patternDensity={1.2}
-            pixelSizeJitter={0.5}
-            enableRipples
-            rippleSpeed={0.4}
-            rippleThickness={0.12}
-            rippleIntensityScale={1.5}
-            liquid
-            liquidStrength={0.12}
-            liquidRadius={1.2}
-            liquidWobbleSpeed={5}
-            speed={0.1}
-            edgeFade={0.25}
-            transparent
-            className="-translate-y-50"
+        <div className="absolute inset-0 z-0 -p-20">
+          <GridScan
+            sensitivity={0.55}
+            lineThickness={1}
+            linesColor="#392e4e"
+            gridScale={0.1}
+            scanColor="#FF9FFC"
+            scanOpacity={0.4}
+            enablePost
+            bloomIntensity={0.6}
+            chromaticAberration={0.002}
+            noiseIntensity={0.01}
           />
+          {/* Gradient overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[--color-dark-950]/50 to-[--color-dark-950]" />
         </div>
 
         {/* Hero Content */}
@@ -70,7 +65,7 @@ const Home = async () => {
                 triggerOnce={true}
                 triggerOnHover={true}
                 respectReducedMotion={true}
-                className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold uppercase leading-tight tracking-wider text-white" /> <br />
+                className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold capitalize leading-tight text-white" /> <br />
 
             </h1>
             <h1>
@@ -85,7 +80,7 @@ const Home = async () => {
                 triggerOnce={true}
                 triggerOnHover={true}
                 respectReducedMotion={true}
-                className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold uppercase leading-tight tracking-wider text-white text-[--color-neon-blue]" /> <br />
+                className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl capitalize font-bold  leading-tight  text-white text-[--color-neon-blue]" /> <br />
 
             </h1>
             <p className="mt-4 md:mt-6 max-w-xl text-base md:text-lg text-[--color-light-300]">
