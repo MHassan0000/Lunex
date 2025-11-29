@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import { carts, cartItems, productVariants, products, productImages } from "@/lib/db/schema";
-import { eq, and, sql, desc } from "drizzle-orm";
+import { eq, and, sql, desc, or, isNull } from "drizzle-orm";
 import { getCurrentUser, guestSession } from "@/lib/auth/actions";
 import { revalidatePath } from "next/cache";
 
@@ -37,18 +37,17 @@ async function getCartId(): Promise<{ cartId: string | null; type: "user" | "gue
 
     const { sessionToken } = await guestSession();
     if (sessionToken) {
-        const guestCart = await db.query.carts.findFirst({
-            where: eq(carts.guestId, sessionToken), // Note: Schema uses guestId as FK to guests table, but we might need to join or check how guests are handled. 
-            // Wait, looking at schema/carts.ts: guestId references guests.id. 
-            // guestSession() returns sessionToken. We need to find the guest record first.
+        const { guests } = await import("@/lib/db/schema");
+        const guest = await db.query.guests.findFirst({
+            where: eq(guests.sessionToken, sessionToken),
         });
 
-        // Let's fix this lookup. We need the guest ID from the session token.
-        const guest = await db.query.guests.findFirst({
-            where: eq(carts.guestId, sessionToken) // This is wrong. guests table has sessionToken.
-        });
-        // Actually, let's look at schema/guest.ts if possible, but I recall guests table has id and sessionToken.
-        // I'll assume I need to look up guest by sessionToken first.
+        if (guest) {
+            const guestCart = await db.query.carts.findFirst({
+                where: eq(carts.guestId, guest.id),
+            });
+            return { cartId: guestCart?.id ?? null, type: "guest" };
+        }
     }
     return { cartId: null, type: null };
 }
@@ -150,10 +149,14 @@ export async function getCart(): Promise<Cart | null> {
         .from(cartItems)
         .innerJoin(productVariants, eq(cartItems.productVariantId, productVariants.id))
         .innerJoin(products, eq(productVariants.productId, products.id))
-        .leftJoin(productImages, and(eq(productImages.productId, products.id), eq(productImages.isPrimary, true)))
+        .leftJoin(productImages, or(
+            and(eq(productImages.variantId, productVariants.id), eq(productImages.isPrimary, true)),
+            and(eq(productImages.productId, products.id), eq(productImages.isPrimary, true), isNull(productImages.variantId))
+        ))
         .leftJoin(sql`colors c`, eq(productVariants.colorId, sql`c.id`))
         .leftJoin(sql`storage s`, eq(productVariants.storageId, sql`s.id`))
-        .where(eq(cartItems.cartId, cartId));
+        .where(eq(cartItems.cartId, cartId))
+        .orderBy(desc(productImages.variantId)); // Prioritize variant images if multiple rows returned (though distinct should handle it)
 
     // Deduplicate images if multiple primary images exist (shouldn't happen but good to be safe)
     // Actually, the join might produce duplicates if multiple primary images. 
