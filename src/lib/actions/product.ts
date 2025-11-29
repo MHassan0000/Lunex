@@ -178,9 +178,9 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
     .from(products);
 
   if (hasVariantFilters) {
-    query = query.innerJoin(variantJoin, eq(variantJoin.productId, products.id)) as typeof query;
+    query = query.innerJoin(variantJoin, eq(variantJoin.productId, products.id)) as unknown as typeof query;
   } else {
-    query = query.leftJoin(variantJoin, eq(variantJoin.productId, products.id)) as typeof query;
+    query = query.leftJoin(variantJoin, eq(variantJoin.productId, products.id)) as unknown as typeof query;
   }
 
   const rows = await query
@@ -200,9 +200,9 @@ export async function getAllProducts(filters: NormalizedProductFilters): Promise
     .from(products);
 
   if (hasVariantFilters) {
-    countQuery = countQuery.innerJoin(variantJoin, eq(variantJoin.productId, products.id)) as typeof countQuery;
+    countQuery = countQuery.innerJoin(variantJoin, eq(variantJoin.productId, products.id)) as unknown as typeof countQuery;
   } else {
-    countQuery = countQuery.leftJoin(variantJoin, eq(variantJoin.productId, products.id)) as typeof countQuery;
+    countQuery = countQuery.leftJoin(variantJoin, eq(variantJoin.productId, products.id)) as unknown as typeof countQuery;
   }
 
   const countRows = await countQuery
