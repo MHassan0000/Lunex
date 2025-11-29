@@ -3,6 +3,8 @@ import { Card } from "@/components";
 import { getAllProducts } from "@/lib/actions/product";
 import Link from "next/link";
 import Image from "next/image";
+import PixelBlast from "@/components/PixelBlast";
+import Shuffle from "@/components/Shuffle";
 
 const CATEGORIES = [
   { name: "Smartphones", slug: "smartphones", image: "/images/smartphones.png" },
@@ -26,23 +28,49 @@ const Home = async () => {
 
   return (
     <main className="min-h-screen bg-[--color-dark-950]">
-      {/* Hero Section */}
-      <section className="relative min-h-[500px] md:min-h-[600px] w-full overflow-hidden">
-        {/* Animated Background */}
+      {/* Hero Section - extends behind navbar */}
+      <section className="relative min-h-[680px] md:min-h-[780px] w-full overflow-hidden -mt-20 pt-20">
+        {/* PixelBlast Animated Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-[--color-dark-950] via-[--color-dark-900] to-[--color-dark-950]" />
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-10 left-10 md:top-20 md:left-20 h-32 w-32 md:h-64 md:w-64 rounded-full bg-[--color-neon-blue] blur-[80px] md:blur-[120px] animate-float" />
-            <div className="absolute bottom-10 right-10 md:bottom-20 md:right-20 h-32 w-32 md:h-64 md:w-64 rounded-full bg-[--color-neon-purple] blur-[80px] md:blur-[120px] animate-float" style={{ animationDelay: "1s" }} />
-          </div>
+          <PixelBlast
+            variant="circle"
+            pixelSize={6}
+            color="#B19EEF"
+            patternScale={3}
+            patternDensity={1.2}
+            pixelSizeJitter={0.5}
+            enableRipples
+            rippleSpeed={0.4}
+            rippleThickness={0.12}
+            rippleIntensityScale={1.5}
+            liquid
+            liquidStrength={0.12}
+            liquidRadius={1.2}
+            liquidWobbleSpeed={5}
+            speed={0.6}
+            edgeFade={0.25}
+            transparent
+          />
+          {/* Gradient overlay - lighter at top to show pixels */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[--color-dark-950]/50 to-[--color-dark-950]" />
         </div>
 
         {/* Hero Content */}
-        <div className="relative mx-auto flex min-h-[500px] md:min-h-[600px] max-w-7xl flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 text-center
+        <div className="relative mx-auto flex min-h-[600px] md:min-h-[700px] max-w-7xl flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 text-center
         ">
           <div className="max-w-3xl">
             <h1 className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold uppercase leading-tight tracking-wider text-white">
-              Level Up <br />
+              <Shuffle text="Level Up"
+                shuffleDirection="right"
+                duration={0.35}
+                animationMode="evenodd"
+                shuffleTimes={1}
+                ease="power3.out"
+                stagger={0.03}
+                threshold={0.1}
+                triggerOnce={true}
+                triggerOnHover={true}
+                respectReducedMotion={true} /> <br />
               <span className="text-[--color-neon-blue]">Your Tech</span>
             </h1>
             <p className="mt-4 md:mt-6 max-w-xl text-base md:text-lg text-[--color-light-300]">
