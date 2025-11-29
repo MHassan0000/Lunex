@@ -1,6 +1,8 @@
 import { XCircle, ArrowLeft, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default function CheckoutCancelPage() {
     return (
         <main className="min-h-screen bg-[--color-dark-950] pt-20 pb-20 flex items-center justify-center">
