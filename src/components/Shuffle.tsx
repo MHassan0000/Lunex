@@ -188,7 +188,7 @@ const Shuffle: React.FC<ShuffleProps> = ({
                     }
 
                     gsap.set(inner, { x: startX, force3D: true });
-                    if (colorFrom) (inner.style as any).color = colorFrom;
+                    if (colorFrom) (inner.style as unknown as { color: string }).color = colorFrom;
 
                     inner.setAttribute('data-final-x', String(finalX));
                     inner.setAttribute('data-start-x', String(startX));
@@ -366,7 +366,7 @@ const Shuffle: React.FC<ShuffleProps> = ({
     const classes = `${baseTw} ${ready ? 'visible' : 'invisible'} ${className}`.trim();
     const Tag = (tag || 'p') as keyof JSX.IntrinsicElements;
 
-    return React.createElement(Tag, { ref: ref as any, className: classes, style: commonStyle }, text);
+    return React.createElement(Tag, { ref: ref, className: classes, style: commonStyle }, text);
 };
 
 export default Shuffle;

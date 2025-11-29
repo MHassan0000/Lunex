@@ -411,11 +411,11 @@ export const GridScan: React.FC<GridScanProps> = ({
             if (
                 enableGyro &&
                 typeof window !== 'undefined' &&
-                (window as any).DeviceOrientationEvent &&
-                (DeviceOrientationEvent as any).requestPermission
+                (window as unknown as { DeviceOrientationEvent: unknown }).DeviceOrientationEvent &&
+                (DeviceOrientationEvent as unknown as { requestPermission: () => Promise<void> }).requestPermission
             ) {
                 try {
-                    await (DeviceOrientationEvent as any).requestPermission();
+                    await (DeviceOrientationEvent as unknown as { requestPermission: () => Promise<void> }).requestPermission();
                 } catch { }
             }
         };
@@ -610,7 +610,24 @@ export const GridScan: React.FC<GridScanProps> = ({
         lineStyle,
         lineJitter,
         scanDirection,
-        enablePost
+        scanDirection,
+        enablePost,
+        bloomIntensity,
+        bloomThreshold,
+        bloomSmoothing,
+        chromaticAberration,
+        noiseIntensity,
+        scanGlow,
+        scanSoftness,
+        scanPhaseTaper,
+        scanDuration,
+        scanDelay,
+        skewScale,
+        tiltScale,
+        yawScale,
+        yBoost,
+        smoothTime,
+        maxSpeed
     ]);
 
     useEffect(() => {
@@ -635,8 +652,8 @@ export const GridScan: React.FC<GridScanProps> = ({
         }
         if (bloomRef.current) {
             bloomRef.current.blendMode.opacity.value = Math.max(0, bloomIntensity);
-            (bloomRef.current as any).luminanceMaterial.threshold = bloomThreshold;
-            (bloomRef.current as any).luminanceMaterial.smoothing = bloomSmoothing;
+            (bloomRef.current as unknown as { luminanceMaterial: { threshold: number; smoothing: number } }).luminanceMaterial.threshold = bloomThreshold;
+            (bloomRef.current as unknown as { luminanceMaterial: { threshold: number; smoothing: number } }).luminanceMaterial.smoothing = bloomSmoothing;
         }
         if (chromaRef.current) {
             chromaRef.current.offset.set(chromaticAberration, chromaticAberration);
@@ -779,7 +796,7 @@ export const GridScan: React.FC<GridScanProps> = ({
                 }
 
                 if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
-                    (video as any).requestVideoFrameCallback(() => detect(performance.now()));
+                    (video as unknown as { requestVideoFrameCallback: (cb: (now: number, metadata: unknown) => void) => void }).requestVideoFrameCallback(() => detect(performance.now()));
                 } else {
                     requestAnimationFrame(detect);
                 }
@@ -841,7 +858,7 @@ function smoothDampVec2(
     const x = omega * deltaTime;
     const exp = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
 
-    let change = current.clone().sub(target);
+    const change = current.clone().sub(target);
     const originalTo = target.clone();
 
     const maxChange = maxSpeed * smoothTime;
