@@ -64,12 +64,12 @@ export default function CartList({ initialItems }: Props) {
 
     if (items.length === 0) {
         return (
-            <div className="rounded-xl border border-[--color-dark-700] bg-[--color-dark-800] p-12 text-center">
-                <h2 className="font-rajdhani text-2xl font-bold text-white">Your cart is empty</h2>
-                <p className="mt-2 text-[--color-dark-500]">Looks like you haven&apos;t added any gear yet.</p>
+            <div className="rounded-xl glass-panel-rpg p-12 text-center">
+                <h2 className="font-rajdhani text-3xl font-bold text-white uppercase tracking-wider text-glow">Your cart is empty</h2>
+                <p className="mt-4 text-[--color-light-300]">Looks like you haven&apos;t added any gear yet.</p>
                 <Link
                     href="/products"
-                    className="mt-6 inline-block rounded-md bg-[--color-neon-blue] px-6 py-3 font-bold text-black transition hover:bg-white hover:shadow-[0_0_15px_rgba(0,243,255,0.5)]"
+                    className="mt-8 inline-block rounded-sm bg-[--color-neon-blue] px-8 py-3 font-rajdhani font-bold text-black uppercase tracking-widest transition hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.6)]"
                 >
                     Start Shopping
                 </Link>
@@ -82,9 +82,9 @@ export default function CartList({ initialItems }: Props) {
             {items.map((item) => (
                 <div
                     key={item.id}
-                    className="flex flex-col gap-4 rounded-xl border border-[--color-dark-700] bg-[--color-dark-800] p-4 sm:flex-row sm:items-center"
+                    className="flex flex-col gap-6 rounded-xl border border-[--color-dark-700] bg-[--color-dark-800]/50 p-6 sm:flex-row sm:items-center transition-all hover:border-[--color-neon-blue]/30 hover:bg-[--color-dark-800]"
                 >
-                    <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-[--color-dark-700] bg-[--color-dark-900]">
+                    <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded-sm border border-[--color-dark-700] bg-[--color-dark-900]">
                         {item.image ? (
                             <Image
                                 src={item.image}
@@ -100,37 +100,37 @@ export default function CartList({ initialItems }: Props) {
                     </div>
 
                     <div className="flex flex-1 flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                        <div className="space-y-1">
-                            <Link href={`/products/${item.productId}`} className="font-rajdhani text-lg font-bold text-white hover:text-[--color-neon-blue]">
+                        <div className="space-y-2">
+                            <Link href={`/products/${item.productId}`} className="font-rajdhani text-xl font-bold text-white uppercase tracking-wide hover:text-[--color-neon-blue] transition-colors">
                                 {item.name}
                             </Link>
-                            <div className="flex flex-wrap gap-2 text-xs text-[--color-dark-500]">
-                                {item.color && <span>{item.color}</span>}
+                            <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider text-[--color-dark-500]">
+                                {item.color && <span className="text-[--color-light-300]">{item.color}</span>}
                                 {item.storage && (
                                     <>
-                                        <span className="text-[--color-dark-700]">•</span>
-                                        <span>{item.storage}</span>
+                                        <span className="text-[--color-dark-700]">/</span>
+                                        <span className="text-[--color-light-300]">{item.storage}</span>
                                     </>
                                 )}
                             </div>
-                            <p className="font-medium text-[--color-light-300]">${(item.price * item.quantity).toFixed(2)}</p>
+                            <p className="font-rajdhani text-lg font-bold text-[--color-neon-blue] text-glow-blue">${(item.price * item.quantity).toFixed(2)}</p>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                            <div className="flex items-center rounded-lg border border-[--color-dark-700] bg-[--color-dark-900]">
+                        <div className="flex items-center gap-8">
+                            <div className="flex items-center rounded-sm border border-[--color-dark-700] bg-[--color-dark-900]">
                                 <button
                                     onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                                     disabled={item.quantity <= 1 || isPending}
-                                    className="p-2 text-[--color-light-300] hover:text-white disabled:opacity-50"
+                                    className="p-3 text-[--color-light-300] hover:text-[--color-neon-blue] hover:bg-[--color-dark-800] disabled:opacity-50 transition-colors"
                                     aria-label="Decrease quantity"
                                 >
                                     <Minus className="h-4 w-4" />
                                 </button>
-                                <span className="w-8 text-center text-sm font-medium text-white">{item.quantity}</span>
+                                <span className="w-10 text-center text-sm font-bold text-white font-mono">{item.quantity}</span>
                                 <button
                                     onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                                     disabled={item.quantity >= item.maxStock || isPending}
-                                    className="p-2 text-[--color-light-300] hover:text-white disabled:opacity-50"
+                                    className="p-3 text-[--color-light-300] hover:text-[--color-neon-blue] hover:bg-[--color-dark-800] disabled:opacity-50 transition-colors"
                                     aria-label="Increase quantity"
                                 >
                                     <Plus className="h-4 w-4" />
@@ -140,7 +140,7 @@ export default function CartList({ initialItems }: Props) {
                             <button
                                 onClick={() => handleRemoveItem(item.id)}
                                 disabled={isPending}
-                                className="text-[--color-dark-500] hover:text-[--color-neon-red] transition-colors"
+                                className="text-[--color-dark-500] hover:text-[--color-neon-red] transition-colors p-2 hover:bg-[--color-neon-red]/10 rounded-full"
                                 aria-label="Remove item"
                             >
                                 {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}

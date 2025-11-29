@@ -9,23 +9,24 @@ body, html {
 }
 
 @theme {
-  /* Dark RPG Palette */
-  --color-dark-950: #050505; /* Deepest Black */
-  --color-dark-900: #0a0a0a; /* Background */
-  --color-dark-800: #121212; /* Card Bg */
-  --color-dark-700: #2a2a2a; /* Borders */
-  --color-dark-500: #555555; /* Muted Text */
+  /* Dark RPG Palette - Black Souls Inspired */
+  --color-dark-950: #05020a; /* Deepest Void Purple/Black */
+  --color-dark-900: #0f0518; /* Dark Background */
+  --color-dark-800: #1a0b2e; /* Card Background */
+  --color-dark-700: #2d1b4e; /* Borders/Separators */
+  --color-dark-500: #6b4c9a; /* Muted Text */
 
   /* Neon Accents */
-  --color-neon-blue: #00f3ff; /* Cyber Blue */
-  --color-neon-purple: #bc13fe; /* Cyber Purple */
-  --color-neon-green: #0aff68; /* Cyber Green */
-  --color-neon-red: #ff003c; /* Cyber Red */
+  --color-neon-blue: #0ea5e9; /* Cyber Blue */
+  --color-neon-purple: #a855f7; /* Mystic Purple */
+  --color-neon-green: #0aff68; /* Toxic Green */
+  --color-neon-red: #ff003c; /* Critical Red */
+  --color-neon-gold: #ffd700; /* Legendary Gold */
 
   /* Light shades */
   --color-light-100: #ffffff;
-  --color-light-200: #e0e0e0;
-  --color-light-300: #a0a0a0;
+  --color-light-200: #e9d5ff; /* Pale Purple Tint */
+  --color-light-300: #a78bfa; /* Light Lavender */
 
   /* Font family */
   --font-outfit: "Outfit", sans-serif;
@@ -172,13 +173,29 @@ body, html {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.glass-panel-rpg {
+  background: rgba(15, 5, 24, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
 .neon-border {
-  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
   border: 1px solid var(--color-neon-blue);
 }
 
+.neon-border-purple {
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+  border: 1px solid var(--color-neon-purple);
+}
+
 .text-glow {
-  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  text-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+}
+
+.text-glow-purple {
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
 }
 
 /* Animation Classes */

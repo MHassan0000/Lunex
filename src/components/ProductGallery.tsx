@@ -108,24 +108,24 @@ export default function ProductGallery({
   }, [go]);
 
   return (
-    <section className={`flex w-full flex-col gap-4 lg:flex-row ${className}`}>
-      <div className="order-2 flex gap-3 overflow-x-auto lg:order-1 lg:flex-col scrollbar-hide">
+    <section className={`flex w-full flex-col gap-6 lg:flex-row ${className}`}>
+      <div className="order-2 flex gap-3 overflow-x-auto lg:order-1 lg:flex-col scrollbar-hide p-1">
         {images.map((src, i) => (
           <button
             key={`${src}-${i}`}
             aria-label={`Thumbnail ${i + 1}`}
             onClick={() => setActiveIndex(i)}
-            className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${i === activeIndex
-              ? "border-[--color-neon-blue] shadow-[0_0_10px_rgba(0,243,255,0.3)]"
-              : "border-[--color-dark-700] hover:border-[--color-light-300]"
+            className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-sm border-2 transition-all ${i === activeIndex
+              ? "border-[--color-neon-blue] shadow-[0_0_15px_rgba(0,243,255,0.4)] scale-105 z-10"
+              : "border-[--color-dark-700] hover:border-[--color-light-300] opacity-70 hover:opacity-100"
               }`}
           >
-            <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="64px" className="object-cover" />
+            <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
           </button>
         ))}
       </div>
 
-      <div ref={mainRef} className="order-1 relative w-full aspect-square lg:h-[500px] lg:w-auto lg:flex-1 overflow-hidden rounded-xl bg-[--color-dark-800] lg:order-2 border border-[--color-dark-700]">
+      <div ref={mainRef} className="order-1 relative w-full aspect-square lg:h-[600px] lg:w-auto lg:flex-1 overflow-hidden rounded-xl bg-[--color-dark-800]/50 lg:order-2 border border-[--color-dark-700] group">
         {images.length > 0 ? (
           <>
             <Image
@@ -134,18 +134,18 @@ export default function ProductGallery({
               alt="Product image"
               fill
               sizes="(min-width:1024px) 720px, 100vw"
-              className="object-contain p-4 animate-fade-in"
+              className="object-contain p-8 animate-fade-in transition-transform duration-500 group-hover:scale-105"
               priority
             />
 
-            <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <button
                 aria-label="Previous image"
                 onClick={(e) => {
                   e.stopPropagation();
                   go(-1);
                 }}
-                className="pointer-events-auto rounded-full bg-[--color-dark-900]/80 p-2 text-white backdrop-blur-sm transition hover:bg-[--color-neon-blue] hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-blue]"
+                className="pointer-events-auto rounded-full bg-[--color-dark-950]/80 p-3 text-white backdrop-blur-md border border-[--color-dark-700] transition hover:border-[--color-neon-blue] hover:text-[--color-neon-blue] hover:shadow-[0_0_15px_rgba(0,243,255,0.3)]"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
@@ -155,17 +155,17 @@ export default function ProductGallery({
                   e.stopPropagation();
                   go(1);
                 }}
-                className="pointer-events-auto rounded-full bg-[--color-dark-900]/80 p-2 text-white backdrop-blur-sm transition hover:bg-[--color-neon-blue] hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-blue]"
+                className="pointer-events-auto rounded-full bg-[--color-dark-950]/80 p-3 text-white backdrop-blur-md border border-[--color-dark-700] transition hover:border-[--color-neon-blue] hover:text-[--color-neon-blue] hover:shadow-[0_0_15px_rgba(0,243,255,0.3)]"
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
             </div>
 
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 p-2 rounded-full bg-black/40 backdrop-blur-sm border border-white/10">
               {images.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1.5 rounded-full transition-all ${i === activeIndex ? "w-6 bg-[--color-neon-blue]" : "w-1.5 bg-[--color-dark-500]"
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === activeIndex ? "w-8 bg-[--color-neon-blue] shadow-[0_0_8px_rgba(0,243,255,0.5)]" : "w-1.5 bg-[--color-dark-500]"
                     }`}
                 />
               ))}
@@ -173,9 +173,9 @@ export default function ProductGallery({
           </>
         ) : (
           <div className="flex h-full w-full items-center justify-center text-[--color-dark-500]">
-            <div className="flex flex-col items-center gap-2">
-              <ImageOff className="h-10 w-10" />
-              <span>No images available</span>
+            <div className="flex flex-col items-center gap-4">
+              <ImageOff className="h-16 w-16 opacity-50" />
+              <span className="font-rajdhani text-xl uppercase tracking-wider">No images available</span>
             </div>
           </div>
         )}

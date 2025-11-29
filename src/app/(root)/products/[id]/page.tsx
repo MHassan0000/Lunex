@@ -15,13 +15,13 @@ function formatPrice(price: number | null | undefined) {
 
 function NotFoundBlock() {
   return (
-    <section className="mx-auto max-w-3xl rounded-xl border border-[--color-dark-700] bg-[--color-dark-800] p-8 text-center">
-      <h1 className="font-rajdhani text-3xl font-bold text-white">Product not found</h1>
-      <p className="mt-2 text-[--color-dark-500]">The product you&apos;re looking for doesn&apos;t exist or may have been removed.</p>
-      <div className="mt-6">
+    <section className="mx-auto max-w-3xl rounded-xl glass-panel-rpg p-12 text-center">
+      <h1 className="font-rajdhani text-4xl font-bold text-white uppercase tracking-wider text-glow">Product not found</h1>
+      <p className="mt-4 text-[--color-light-300]">The product you&apos;re looking for doesn&apos;t exist or may have been removed.</p>
+      <div className="mt-8">
         <Link
           href="/products"
-          className="inline-block rounded-md bg-[--color-neon-blue] px-6 py-3 font-rajdhani font-bold text-black transition hover:bg-white hover:shadow-[0_0_15px_rgba(0,243,255,0.5)]"
+          className="inline-block rounded-sm bg-[--color-neon-blue] px-8 py-3 font-rajdhani font-bold text-black uppercase tracking-widest transition hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.6)]"
         >
           Browse Products
         </Link>
@@ -42,28 +42,30 @@ async function ReviewsSection({ productId }: { productId: string }) {
       rightMeta={
         <span className="flex items-center gap-1 text-[--color-neon-blue]">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Star key={i} className={`h-4 w-4 ${i <= Math.round(avg) ? "fill-[--color-neon-blue]" : "text-[--color-dark-500]"}`} />
+            <Star key={i} className={`h-4 w-4 ${i <= Math.round(avg) ? "fill-[--color-neon-blue] text-[--color-neon-blue]" : "text-[--color-dark-500]"}`} />
           ))}
         </span>
       }
     >
       {reviews.length === 0 ? (
-        <p className="text-[--color-dark-500]">No reviews yet.</p>
+        <div className="rounded-lg border border-[--color-dark-700] bg-[--color-dark-800]/50 p-6 text-center">
+          <p className="text-[--color-dark-500]">No reviews yet. Be the first to review!</p>
+        </div>
       ) : (
         <ul className="space-y-4">
           {reviews.slice(0, 10).map((r) => (
-            <li key={r.id} className="rounded-lg border border-[--color-dark-700] bg-[--color-dark-800] p-4">
-              <div className="mb-1 flex items-center justify-between">
-                <p className="font-medium text-white">{r.author}</p>
+            <li key={r.id} className="rounded-lg border border-[--color-dark-700] bg-[--color-dark-800]/50 p-6 transition-all hover:border-[--color-neon-blue]/30">
+              <div className="mb-2 flex items-center justify-between">
+                <p className="font-bold text-white uppercase tracking-wider">{r.author}</p>
                 <span className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className={`h-4 w-4 ${i <= r.rating ? "fill-[--color-neon-blue] text-[--color-neon-blue]" : "text-[--color-dark-500]"}`} />
+                    <Star key={i} className={`h-3 w-3 ${i <= r.rating ? "fill-[--color-neon-blue] text-[--color-neon-blue]" : "text-[--color-dark-500]"}`} />
                   ))}
                 </span>
               </div>
-              {r.title && <p className="font-medium text-white">{r.title}</p>}
-              {r.content && <p className="mt-1 line-clamp-[8] text-sm text-[--color-light-300]">{r.content}</p>}
-              <p className="mt-2 text-xs text-[--color-dark-500]">{new Date(r.createdAt).toLocaleDateString()}</p>
+              {r.title && <p className="font-bold text-[--color-light-200] mb-1">{r.title}</p>}
+              {r.content && <p className="line-clamp-[8] text-sm text-[--color-light-300] leading-relaxed">{r.content}</p>}
+              <p className="mt-3 text-xs text-[--color-dark-500] font-mono">{new Date(r.createdAt).toLocaleDateString()}</p>
             </li>
           ))}
         </ul>
@@ -102,7 +104,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   if (!data) {
     return (
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-screen bg-[--color-dark-950] pt-20">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-screen bg-[--color-dark-950] pt-20 relative">
+        <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
         <NotFoundBlock />
       </main>
     );
@@ -147,11 +150,14 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const specs = product.specs as Record<string, string> | null;
 
   return (
-    <main className="min-h-screen bg-[--color-dark-950] pb-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <nav className="py-4 text-xs text-[--color-dark-500]">
-          <Link href="/" className="hover:text-[--color-neon-blue]">Home</Link> / <Link href="/products" className="hover:text-[--color-neon-blue]">Products</Link> /{" "}
-          <span className="text-white">{product.name}</span>
+    <main className="min-h-screen bg-[--color-dark-950] pb-20 relative">
+      {/* Background Texture */}
+      <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <nav className="py-6 text-xs font-bold uppercase tracking-widest text-[--color-dark-500]">
+          <Link href="/" className="hover:text-[--color-neon-blue] transition-colors">Home</Link> <span className="text-[--color-dark-700]">/</span> <Link href="/products" className="hover:text-[--color-neon-blue] transition-colors">Products</Link> <span className="text-[--color-dark-700]">/</span>{" "}
+          <span className="text-[--color-neon-purple]">{product.name}</span>
         </nav>
 
         <section className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_480px]">
@@ -159,24 +165,24 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <ProductGallery productId={product.id} variants={galleryVariants} className="lg:sticky lg:top-24" />
           )}
 
-          <div className="flex flex-col gap-6">
-            <header className="flex flex-col gap-2">
+          <div className="flex flex-col gap-8">
+            <header className="flex flex-col gap-2 border-b border-[--color-dark-700] pb-6">
               {product.brand && (
-                <Link href={`/products?brand=${product.brand.slug}`} className="text-sm font-bold uppercase tracking-widest text-[--color-neon-blue]">
+                <Link href={`/products?brand=${product.brand.slug}`} className="text-sm font-bold uppercase tracking-widest text-[--color-neon-blue] hover:text-white transition-colors w-fit">
                   {product.brand.name}
                 </Link>
               )}
-              <h1 className="font-rajdhani text-4xl font-bold text-white sm:text-5xl">{product.name}</h1>
-              {product.model && <p className="text-sm text-[--color-dark-500]">Model: {product.model}</p>}
+              <h1 className="font-rajdhani text-5xl font-bold text-white sm:text-6xl uppercase tracking-wide">{product.name}</h1>
+              {product.model && <p className="text-sm text-[--color-dark-500] font-mono">Model: <span className="text-[--color-light-300]">{product.model}</span></p>}
             </header>
 
-            <div className="flex items-center gap-3">
-              <p className="font-rajdhani text-3xl font-bold text-white text-glow">{formatPrice(displayPrice)}</p>
+            <div className="flex items-center gap-4">
+              <p className="font-rajdhani text-4xl font-bold text-white text-glow-purple">{formatPrice(displayPrice)}</p>
               {compareAt && (
                 <>
-                  <span className="text-lg text-[--color-dark-500] line-through">{formatPrice(compareAt)}</span>
+                  <span className="text-xl text-[--color-dark-500] line-through decoration-[--color-neon-red] decoration-2">{formatPrice(compareAt)}</span>
                   {discount !== null && (
-                    <span className="rounded border border-[--color-neon-green] bg-[--color-neon-green]/10 px-2 py-0.5 text-xs font-bold text-[--color-neon-green]">
+                    <span className="rounded-sm border border-[--color-neon-green] bg-[--color-neon-green]/10 px-3 py-1 text-xs font-bold text-[--color-neon-green] uppercase tracking-wider animate-pulse">
                       {discount}% OFF
                     </span>
                   )}
@@ -184,64 +190,68 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               )}
             </div>
 
-            <div className="flex flex-wrap gap-4 text-xs text-[--color-light-300]">
+            <div className="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider text-[--color-light-300]">
               {product.releaseYear && (
-                <div className="flex items-center gap-1.5 rounded bg-[--color-dark-800] px-2 py-1">
-                  <Calendar className="h-3.5 w-3.5 text-[--color-neon-purple]" />
+                <div className="flex items-center gap-2 rounded-sm border border-[--color-dark-700] bg-[--color-dark-800] px-3 py-1.5">
+                  <Calendar className="h-4 w-4 text-[--color-neon-purple]" />
                   <span>Released {product.releaseYear}</span>
                 </div>
               )}
               {product.warrantyMonths && (
-                <div className="flex items-center gap-1.5 rounded bg-[--color-dark-800] px-2 py-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[--color-neon-green]" />
+                <div className="flex items-center gap-2 rounded-sm border border-[--color-dark-700] bg-[--color-dark-800] px-3 py-1.5">
+                  <ShieldCheck className="h-4 w-4 text-[--color-neon-green]" />
                   <span>{product.warrantyMonths} Month Warranty</span>
                 </div>
               )}
             </div>
 
-            <ColorSwatches productId={product.id} variants={galleryVariants} />
-            <StoragePicker productId={product.id} />
+            <div className="space-y-6 p-6 rounded-xl glass-panel-rpg">
+              <ColorSwatches productId={product.id} variants={galleryVariants} />
+              <StoragePicker productId={product.id} />
 
-            <div className="flex flex-col gap-3 mt-4">
-              <AddToCartButton productId={product.id} variants={variants} />
-              <button className="flex items-center justify-center gap-2 rounded-md border border-[--color-dark-700] bg-[--color-dark-800] px-6 py-4 font-medium text-white transition hover:border-[--color-neon-purple] hover:text-[--color-neon-purple] focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-neon-purple]">
-                <Heart className="h-5 w-5" />
-                Add to Wishlist
-              </button>
+              <div className="flex flex-col gap-4 mt-2">
+                <AddToCartButton productId={product.id} variants={variants} />
+                <button className="flex items-center justify-center gap-2 rounded-sm border border-[--color-neon-purple] bg-transparent px-6 py-4 font-bold text-[--color-neon-purple] uppercase tracking-widest transition-all hover:bg-[--color-neon-purple] hover:text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] focus:outline-none">
+                  <Heart className="h-5 w-5" />
+                  Add to Wishlist
+                </button>
+              </div>
             </div>
 
-            <CollapsibleSection title="Tech Specs" defaultOpen>
-              {specs ? (
-                <div className="grid grid-cols-1 gap-y-2 text-sm">
-                  {Object.entries(specs).map(([key, value]) => (
-                    <div key={key} className="flex justify-between border-b border-[--color-dark-700] py-2 last:border-0">
-                      <span className="font-medium text-[--color-dark-500] capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</span>
-                      <span className="text-white text-right">{String(value)}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-[--color-dark-500]">No specifications available.</p>
-              )}
-            </CollapsibleSection>
+            <div className="space-y-4">
+              <CollapsibleSection title="Tech Specs" defaultOpen>
+                {specs ? (
+                  <div className="grid grid-cols-1 gap-y-3 text-sm">
+                    {Object.entries(specs).map(([key, value]) => (
+                      <div key={key} className="flex justify-between border-b border-[--color-dark-700] py-2 last:border-0 group hover:bg-[--color-dark-800]/50 px-2 transition-colors rounded-sm">
+                        <span className="font-bold text-[--color-dark-500] uppercase tracking-wider group-hover:text-[--color-neon-blue] transition-colors">{key.replace(/([A-Z])/g, " $1").trim()}</span>
+                        <span className="text-white text-right font-mono">{String(value)}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[--color-dark-500]">No specifications available.</p>
+                )}
+              </CollapsibleSection>
 
-            <CollapsibleSection title="Description">
-              <p className="text-[--color-light-300] leading-relaxed">{product.description}</p>
-            </CollapsibleSection>
+              <CollapsibleSection title="Description">
+                <p className="text-[--color-light-300] leading-relaxed font-light">{product.description}</p>
+              </CollapsibleSection>
 
-            <CollapsibleSection title="Shipping & Returns">
-              <p className="text-[--color-light-300]">Free standard shipping on all orders over $100. 30-day hassle-free returns.</p>
-            </CollapsibleSection>
+              <CollapsibleSection title="Shipping & Returns">
+                <p className="text-[--color-light-300]">Free standard shipping on all orders over $100. 30-day hassle-free returns.</p>
+              </CollapsibleSection>
 
-            <Suspense
-              fallback={
-                <CollapsibleSection title="Reviews">
-                  <p className="text-[--color-dark-500]">Loading reviews…</p>
-                </CollapsibleSection>
-              }
-            >
-              <ReviewsSection productId={product.id} />
-            </Suspense>
+              <Suspense
+                fallback={
+                  <CollapsibleSection title="Reviews">
+                    <p className="text-[--color-dark-500] animate-pulse">Loading reviews…</p>
+                  </CollapsibleSection>
+                }
+              >
+                <ReviewsSection productId={product.id} />
+              </Suspense>
+            </div>
           </div>
         </section>
 

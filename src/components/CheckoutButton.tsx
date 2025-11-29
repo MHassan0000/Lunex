@@ -54,16 +54,16 @@ export default function CheckoutButton({ disabled }: CheckoutButtonProps) {
         <button
             onClick={handleCheckout}
             disabled={disabled || isLoading}
-            className="flex w-full items-center justify-center gap-2 rounded-md bg-[--color-neon-blue] px-6 py-3 font-bold text-white hover:text-black transition hover:bg-white hover:shadow-[0_0_15px_rgba(0,243,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex w-full items-center justify-center gap-2 rounded-sm bg-[--color-neon-blue] px-6 py-4 font-rajdhani text-lg font-bold text-black uppercase tracking-widest transition-all hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.6)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
         >
             {isLoading ? (
                 <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin" />
                     Processing...
                 </>
             ) : (
                 <>
-                    Checkout <ArrowRight className="h-4 w-4" />
+                    Checkout <ArrowRight className="h-5 w-5" />
                 </>
             )}
         </button>

@@ -48,15 +48,18 @@ export default async function ProductsPage({
   });
 
   return (
-    <main className="min-h-screen bg-[--color-dark-950] px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen bg-[--color-dark-950] px-4 sm:px-6 lg:px-8 relative">
+      {/* Background Texture */}
+      <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
+
+      <div className="mx-auto max-w-7xl relative z-10">
         {/* Header */}
         <header className="flex items-center justify-between border-b border-[--color-dark-700] py-8">
           <div>
-            <h1 className="font-rajdhani text-4xl font-bold text-white">
+            <h1 className="font-rajdhani text-5xl font-bold text-white uppercase tracking-wider text-glow-purple">
               Products
             </h1>
-            <p className="mt-1 text-sm text-[--color-dark-500]">
+            <p className="mt-2 text-sm text-[--color-dark-500] font-mono">
               <span className="text-[--color-neon-blue]">{totalCount}</span> items available
             </p>
           </div>
@@ -66,11 +69,11 @@ export default async function ProductsPage({
         {/* Active Filters */}
         {activeBadges.length > 0 && (
           <div className="flex flex-wrap items-center gap-2 py-4">
-            <span className="text-sm font-medium text-[--color-dark-500]">Active Filters:</span>
+            <span className="text-sm font-bold text-[--color-dark-500] uppercase tracking-wider">Active Filters:</span>
             {activeBadges.map((b, i) => (
               <span
                 key={`${b}-${i}`}
-                className="animate-scale-in rounded-md border border-[--color-neon-blue] bg-[--color-neon-blue]/10 px-3 py-1 text-xs font-medium text-[--color-neon-blue]"
+                className="animate-scale-in rounded-sm border border-[--color-neon-blue] bg-[--color-neon-blue]/10 px-3 py-1 text-xs font-bold text-[--color-neon-blue] uppercase tracking-wider backdrop-blur-sm"
                 style={{ animationDelay: `${i * 50}ms` }}
               >
                 {b}
@@ -90,9 +93,9 @@ export default async function ProductsPage({
           <div>
             {products.length === 0 ? (
               <ScrollReveal>
-                <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-[--color-dark-700] bg-[--color-dark-800] p-12 text-center">
+                <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-[--color-dark-700] bg-[--color-dark-800]/50 backdrop-blur-sm p-12 text-center">
                   <PackageX className="mb-4 h-16 w-16 text-[--color-dark-500]" />
-                  <h3 className="mb-2 font-rajdhani text-2xl font-bold text-white">
+                  <h3 className="mb-2 font-rajdhani text-3xl font-bold text-white uppercase tracking-wider">
                     No Products Found
                   </h3>
                   <p className="mb-6 text-[--color-light-300]">
@@ -100,7 +103,7 @@ export default async function ProductsPage({
                   </p>
                   <Link
                     href="/products"
-                    className="rounded-lg border border-[--color-neon-blue] px-6 py-3 font-rajdhani font-bold text-[--color-neon-blue] transition-all hover:bg-[--color-neon-blue]/10 hover:shadow-[0_0_20px_rgba(0,243,255,0.3)]"
+                    className="rounded-sm border border-[--color-neon-blue] px-8 py-3 font-rajdhani font-bold text-[--color-neon-blue] transition-all hover:bg-[--color-neon-blue] hover:text-black hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] uppercase tracking-widest"
                   >
                     Clear Filters
                   </Link>
@@ -128,6 +131,7 @@ export default async function ProductsPage({
                             ? { label: "New", tone: "blue" }
                             : undefined
                         }
+                        className="h-full"
                       />
                     </ScrollReveal>
                   );

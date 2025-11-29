@@ -11,9 +11,12 @@ export default async function CartPage() {
     const total = subtotal + shipping;
 
     return (
-        <main className="min-h-screen bg-[--color-dark-950] pt-20 pb-20 animate-fade-in">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="mb-8 font-rajdhani text-4xl font-bold text-white text-center">Your Cart</h1>
+        <main className="min-h-screen bg-[--color-dark-950] pt-20 pb-20 animate-fade-in relative">
+            {/* Background Texture */}
+            <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
+
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+                <h1 className="mb-8 font-rajdhani text-5xl font-bold text-white text-center uppercase tracking-wider text-glow-purple">Your Cart</h1>
 
                 <div className={items.length > 0 ? "grid grid-cols-1 gap-8 lg:grid-cols-[1fr_380px]" : "flex justify-center"}>
                     {/* Cart Items */}
@@ -23,28 +26,28 @@ export default async function CartPage() {
 
                     {/* Summary */}
                     {items.length > 0 && (
-                        <aside className="h-fit space-y-6 rounded-xl border border-[--color-dark-700] bg-[--color-dark-800] p-6 animate-slide-in-right" style={{ animationDelay: "0.2s" }}>
-                            <h2 className="font-rajdhani text-xl font-bold text-white">Order Summary</h2>
+                        <aside className="h-fit space-y-6 rounded-xl glass-panel-rpg p-8 animate-slide-in-right" style={{ animationDelay: "0.2s" }}>
+                            <h2 className="font-rajdhani text-2xl font-bold text-white uppercase tracking-wider border-b border-[--color-dark-700] pb-4">Order Summary</h2>
 
                             <div className="space-y-4 border-b border-[--color-dark-700] pb-4">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-[--color-dark-500]">Subtotal</span>
-                                    <span className="text-[--color-light-300]">${subtotal.toFixed(2)}</span>
+                                <div className="flex justify-between text-sm font-medium">
+                                    <span className="text-[--color-dark-500] uppercase tracking-wide">Subtotal</span>
+                                    <span className="text-[--color-light-300] font-mono">${subtotal.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-[--color-dark-500]">Shipping</span>
-                                    <span className="text-[--color-light-300]">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+                                <div className="flex justify-between text-sm font-medium">
+                                    <span className="text-[--color-dark-500] uppercase tracking-wide">Shipping</span>
+                                    <span className="text-[--color-neon-green] font-mono">{shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}</span>
                                 </div>
                             </div>
 
-                            <div className="flex justify-between text-lg font-bold text-white">
-                                <span>Total</span>
-                                <span>${total.toFixed(2)}</span>
+                            <div className="flex justify-between text-xl font-bold text-white">
+                                <span className="uppercase tracking-wider">Total</span>
+                                <span className="text-glow-purple font-rajdhani">${total.toFixed(2)}</span>
                             </div>
 
                             <CheckoutButton />
 
-                            <div className="flex items-center justify-center gap-2 text-xs text-[--color-dark-500]">
+                            <div className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider text-[--color-dark-500]">
                                 <ShieldCheck className="h-4 w-4 text-[--color-neon-green]" />
                                 <span>Secure Checkout</span>
                             </div>

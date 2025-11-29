@@ -83,21 +83,21 @@ export default function Filters() {
     <>
       <div className="mb-4 flex items-center justify-between md:hidden">
         <button
-          className="rounded-md border border-[--color-dark-700] bg-[--color-dark-800] px-3 py-2 text-sm font-medium text-white"
+          className="rounded-md border border-[--color-neon-purple] bg-[--color-dark-800] px-4 py-2 text-sm font-bold text-[--color-neon-purple] uppercase tracking-wider"
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
         >
           Filters
         </button>
-        <button className="text-xs text-[--color-neon-blue] underline" onClick={clearAll}>
+        <button className="text-xs text-[--color-neon-blue] hover:text-white underline" onClick={clearAll}>
           Clear all
         </button>
       </div>
 
-      <aside className="sticky top-24 hidden h-fit min-w-60 rounded-xl border border-[--color-dark-700] bg-[--color-dark-800]/50 backdrop-blur-sm p-4 md:block">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-rajdhani text-xl font-bold text-white uppercase tracking-wider">Filters</h3>
-          <button className="text-xs text-[--color-neon-blue] hover:text-white transition-colors" onClick={clearAll}>
+      <aside className="sticky top-24 hidden h-fit min-w-60 rounded-xl glass-panel-rpg p-6 md:block">
+        <div className="mb-6 flex items-center justify-between border-b border-[--color-dark-700] pb-4">
+          <h3 className="font-rajdhani text-2xl font-bold text-white uppercase tracking-wider text-glow-purple">Filters</h3>
+          <button className="text-xs text-[--color-neon-blue] hover:text-white transition-colors uppercase tracking-wider font-bold" onClick={clearAll}>
             Clear all
           </button>
         </div>
@@ -107,15 +107,18 @@ export default function Filters() {
             {BRANDS.map((b) => {
               const checked = getArrayParam(search, "brand").includes(b);
               return (
-                <li key={b} className="flex items-center gap-2">
-                  <input
-                    id={`brand-${b}`}
-                    type="checkbox"
-                    className="h-4 w-4 accent-[--color-neon-blue] bg-[--color-dark-900] border-[--color-dark-500]"
-                    checked={checked}
-                    onChange={() => onToggle("brand", b)}
-                  />
-                  <label htmlFor={`brand-${b}`} className="text-sm text-[--color-light-300] hover:text-white cursor-pointer">
+                <li key={b} className="flex items-center gap-3 group">
+                  <div className="relative flex items-center">
+                    <input
+                      id={`brand-${b}`}
+                      type="checkbox"
+                      className="peer h-4 w-4 appearance-none rounded-sm border border-[--color-dark-500] bg-[--color-dark-900] checked:border-[--color-neon-blue] checked:bg-[--color-neon-blue] transition-all cursor-pointer"
+                      checked={checked}
+                      onChange={() => onToggle("brand", b)}
+                    />
+                    <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-black pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <label htmlFor={`brand-${b}`} className="text-sm text-[--color-light-300] group-hover:text-[--color-neon-blue] transition-colors cursor-pointer font-medium tracking-wide">
                     {b}
                   </label>
                 </li>
@@ -130,9 +133,9 @@ export default function Filters() {
               const checked = getArrayParam(search, "storage").includes(s);
               return (
                 <li key={s}>
-                  <label className={`flex cursor-pointer items-center justify-center rounded border px-2 py-1 text-xs transition-all ${checked
-                      ? "border-[--color-neon-blue] bg-[--color-neon-blue]/20 text-[--color-neon-blue]"
-                      : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500] hover:border-[--color-light-300]"
+                  <label className={`flex cursor-pointer items-center justify-center rounded-sm border px-2 py-1.5 text-xs transition-all font-bold tracking-wider ${checked
+                    ? "border-[--color-neon-blue] bg-[--color-neon-blue]/20 text-[--color-neon-blue] shadow-[0_0_10px_rgba(14,165,233,0.2)]"
+                    : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500] hover:border-[--color-neon-blue]/50 hover:text-[--color-light-300]"
                     }`}>
                     <input
                       type="checkbox"
@@ -154,9 +157,9 @@ export default function Filters() {
               const checked = getArrayParam(search, "ram").includes(r);
               return (
                 <li key={r}>
-                  <label className={`flex cursor-pointer items-center justify-center rounded border px-2 py-1 text-xs transition-all ${checked
-                      ? "border-[--color-neon-purple] bg-[--color-neon-purple]/20 text-[--color-neon-purple]"
-                      : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500] hover:border-[--color-light-300]"
+                  <label className={`flex cursor-pointer items-center justify-center rounded-sm border px-2 py-1.5 text-xs transition-all font-bold tracking-wider ${checked
+                    ? "border-[--color-neon-purple] bg-[--color-neon-purple]/20 text-[--color-neon-purple] shadow-[0_0_10px_rgba(168,85,247,0.2)]"
+                    : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500] hover:border-[--color-neon-purple]/50 hover:text-[--color-light-300]"
                     }`}>
                     <input
                       type="checkbox"
@@ -177,15 +180,18 @@ export default function Filters() {
             {COLORS.map((c) => {
               const checked = getArrayParam(search, "color").includes(c);
               return (
-                <li key={c} className="flex items-center gap-2">
-                  <input
-                    id={`color-${c}`}
-                    type="checkbox"
-                    className="h-4 w-4 accent-[--color-neon-blue]"
-                    checked={checked}
-                    onChange={() => onToggle("color", c)}
-                  />
-                  <label htmlFor={`color-${c}`} className="text-sm text-[--color-light-300] capitalize hover:text-white cursor-pointer">
+                <li key={c} className="flex items-center gap-3 group">
+                  <div className="relative flex items-center">
+                    <input
+                      id={`color-${c}`}
+                      type="checkbox"
+                      className="peer h-4 w-4 appearance-none rounded-full border border-[--color-dark-500] bg-[--color-dark-900] checked:border-[--color-neon-blue] checked:bg-[--color-neon-blue] transition-all cursor-pointer"
+                      checked={checked}
+                      onChange={() => onToggle("color", c)}
+                    />
+                    <div className={`absolute left-6 w-3 h-3 rounded-full border border-[--color-dark-700]`} style={{ backgroundColor: c === 'space-gray' ? '#4b5563' : c }} />
+                  </div>
+                  <label htmlFor={`color-${c}`} className="text-sm text-[--color-light-300] capitalize group-hover:text-white cursor-pointer pl-4">
                     {c.replace("-", " ")}
                   </label>
                 </li>
@@ -199,15 +205,18 @@ export default function Filters() {
             {PRICES.map((p) => {
               const checked = getArrayParam(search, "price").includes(p.id);
               return (
-                <li key={p.id} className="flex items-center gap-2">
-                  <input
-                    id={`price-${p.id}`}
-                    type="checkbox"
-                    className="h-4 w-4 accent-[--color-neon-green]"
-                    checked={checked}
-                    onChange={() => onToggle("price", p.id)}
-                  />
-                  <label htmlFor={`price-${p.id}`} className="text-sm text-[--color-light-300] hover:text-white cursor-pointer">
+                <li key={p.id} className="flex items-center gap-3 group">
+                  <div className="relative flex items-center">
+                    <input
+                      id={`price-${p.id}`}
+                      type="checkbox"
+                      className="peer h-4 w-4 appearance-none rounded-sm border border-[--color-dark-500] bg-[--color-dark-900] checked:border-[--color-neon-green] checked:bg-[--color-neon-green] transition-all cursor-pointer"
+                      checked={checked}
+                      onChange={() => onToggle("price", p.id)}
+                    />
+                    <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-black pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <label htmlFor={`price-${p.id}`} className="text-sm text-[--color-light-300] group-hover:text-[--color-neon-green] transition-colors cursor-pointer font-medium">
                     {p.label}
                   </label>
                 </li>
@@ -220,28 +229,28 @@ export default function Filters() {
       {open && (
         <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
             aria-hidden="true"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-y-0 left-0 w-80 max-w-[80%] overflow-auto bg-[--color-dark-900] p-4 shadow-xl border-r border-[--color-dark-700]">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-rajdhani text-xl font-bold text-white">Filters</h3>
-              <button className="text-xs text-[--color-neon-blue]" onClick={clearAll}>
+          <div className="absolute inset-y-0 left-0 w-80 max-w-[85%] overflow-auto bg-[--color-dark-900] p-6 shadow-2xl border-r border-[--color-neon-purple]/30">
+            <div className="mb-6 flex items-center justify-between border-b border-[--color-dark-700] pb-4">
+              <h3 className="font-rajdhani text-2xl font-bold text-white uppercase tracking-wider">Filters</h3>
+              <button className="text-xs text-[--color-neon-blue] font-bold uppercase" onClick={clearAll}>
                 Clear all
               </button>
             </div>
-            <div className="md:hidden">
+            <div className="md:hidden space-y-6">
               <Group title="Brand" k="brand">
                 <ul className="space-y-2">
                   {BRANDS.map((b) => {
                     const checked = getArrayParam(search, "brand").includes(b);
                     return (
-                      <li key={b} className="flex items-center gap-2">
+                      <li key={b} className="flex items-center gap-3">
                         <input
                           id={`m-brand-${b}`}
                           type="checkbox"
-                          className="h-4 w-4 accent-[--color-neon-blue]"
+                          className="h-4 w-4 accent-[--color-neon-blue] bg-[--color-dark-800]"
                           checked={checked}
                           onChange={() => onToggle("brand", b)}
                         />
@@ -260,9 +269,9 @@ export default function Filters() {
                     const checked = getArrayParam(search, "storage").includes(s);
                     return (
                       <li key={s}>
-                        <label className={`flex cursor-pointer items-center justify-center rounded border px-2 py-1 text-xs transition-all ${checked
-                            ? "border-[--color-neon-blue] bg-[--color-neon-blue]/20 text-[--color-neon-blue]"
-                            : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500]"
+                        <label className={`flex cursor-pointer items-center justify-center rounded-sm border px-2 py-1.5 text-xs transition-all font-bold ${checked
+                          ? "border-[--color-neon-blue] bg-[--color-neon-blue]/20 text-[--color-neon-blue]"
+                          : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500]"
                           }`}>
                           <input
                             type="checkbox"
@@ -284,9 +293,9 @@ export default function Filters() {
                     const checked = getArrayParam(search, "ram").includes(r);
                     return (
                       <li key={r}>
-                        <label className={`flex cursor-pointer items-center justify-center rounded border px-2 py-1 text-xs transition-all ${checked
-                            ? "border-[--color-neon-purple] bg-[--color-neon-purple]/20 text-[--color-neon-purple]"
-                            : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500]"
+                        <label className={`flex cursor-pointer items-center justify-center rounded-sm border px-2 py-1.5 text-xs transition-all font-bold ${checked
+                          ? "border-[--color-neon-purple] bg-[--color-neon-purple]/20 text-[--color-neon-purple]"
+                          : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500]"
                           }`}>
                           <input
                             type="checkbox"
@@ -307,7 +316,7 @@ export default function Filters() {
                   {COLORS.map((c) => {
                     const checked = getArrayParam(search, "color").includes(c);
                     return (
-                      <li key={c} className="flex items-center gap-2">
+                      <li key={c} className="flex items-center gap-3">
                         <input
                           id={`m-color-${c}`}
                           type="checkbox"
@@ -329,7 +338,7 @@ export default function Filters() {
                   {PRICES.map((p) => {
                     const checked = getArrayParam(search, "price").includes(p.id);
                     return (
-                      <li key={p.id} className="flex items-center gap-2">
+                      <li key={p.id} className="flex items-center gap-3">
                         <input
                           id={`m-price-${p.id}`}
                           type="checkbox"
