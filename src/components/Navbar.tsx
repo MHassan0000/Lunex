@@ -4,11 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
-import { User, Search } from "lucide-react";
+import { User, Search, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import SearchOverlay from "@/components/SearchOverlay";
 import { useCartStore } from "@/store/cart";
 import { getCartCount } from "@/lib/actions/cart";
+import { useWishlistStore } from "@/store/wishlist";
 
 const NAV_LINKS = [
   { label: "Smartphones", href: "/products?category=smartphones" },
@@ -24,6 +25,8 @@ export default function Navbar() {
   const { data: session } = authClient.useSession();
   const router = useRouter();
   const { count, setCount } = useCartStore();
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const wishlistCount = wishlistItems.size;
 
   useEffect(() => {
     const fetchCount = async () => {
@@ -81,6 +84,21 @@ export default function Navbar() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:stroke-[--color-neon-green] transition-colors"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
               </div>
               <span className="font-rajdhani font-bold group-hover:text-[--color-neon-green] transition-colors">Cart ({count})</span>
+            </Link>
+
+            <Link
+              href={session ? "/profile" : "/profile"}
+              className="text-[--color-light-300] transition-colors hover:text-[--color-neon-purple] hover:text-glow flex items-center gap-2 group"
+            >
+              <div className="relative">
+                <Heart className="h-5 w-5 group-hover:stroke-[--color-neon-purple] transition-colors" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-[--color-neon-purple] text-[9px] font-bold text-white">
+                    {wishlistCount}
+                  </span>
+                )}
+              </div>
+              <span className="font-rajdhani font-bold group-hover:text-[--color-neon-purple] transition-colors">Wishlist</span>
             </Link>
 
             {session ? (
@@ -147,6 +165,14 @@ export default function Navbar() {
                 Search
               </button>
               <Link href="/cart" className="text-[--color-neon-green] font-rajdhani font-bold hover:text-glow">Cart ({count})</Link>
+              <Link
+                href={session ? "/profile" : "/profile"}
+                className="text-[--color-neon-purple] font-rajdhani font-bold hover:text-glow flex items-center gap-1"
+                onClick={() => setOpen(false)}
+              >
+                <Heart className="h-4 w-4" />
+                Wishlist ({wishlistCount})
+              </Link>
             </li>
             <li className="pt-2">
               {session ? (

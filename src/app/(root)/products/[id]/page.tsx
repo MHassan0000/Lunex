@@ -2,9 +2,11 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Card, CollapsibleSection, ProductGallery, StoragePicker } from "@/components";
 import AddToCartButton from "@/components/AddToCartButton";
+import AddToWishlistButton from "@/components/AddToWishlistButton";
 import { Heart, Star, ShieldCheck, Calendar } from "lucide-react";
 import ColorSwatches from "@/components/ColorSwatches";
 import { getProduct, getProductReviews, getRecommendedProducts, type Review, type RecommendedProduct } from "@/lib/actions/product";
+import { getCurrentUser } from "@/lib/auth/actions";
 
 type GalleryVariant = { color: string; images: string[] };
 
@@ -101,6 +103,7 @@ async function AlsoLikeSection({ productId }: { productId: string }) {
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const data = await getProduct(id);
+  const user = await getCurrentUser();
 
   if (!data) {
     return (
@@ -211,10 +214,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
               <div className="flex flex-col gap-4 mt-2">
                 <AddToCartButton productId={product.id} variants={variants} />
-                <button className="flex items-center justify-center gap-2 rounded-sm border border-[--color-neon-purple] bg-transparent px-4 sm:px-6 py-4 font-bold text-[--color-neon-purple] uppercase tracking-wide sm:tracking-widest transition-all hover:bg-[--color-neon-purple] hover:text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] focus:outline-none text-sm sm:text-base">
-                  <Heart className="h-5 w-5" />
-                  Add to Wishlist
-                </button>
+                <AddToWishlistButton productId={product.id} user={user} />
               </div>
             </div>
 
