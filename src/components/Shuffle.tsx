@@ -81,6 +81,7 @@ const Shuffle: React.FC<ShuffleProps> = ({
             if (!ref.current || !text || !fontsLoaded) return;
             if (respectReducedMotion && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
                 onShuffleComplete?.();
+                setReady(true);
                 return;
             }
 

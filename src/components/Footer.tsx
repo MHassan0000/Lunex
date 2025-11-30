@@ -32,7 +32,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 group">
               <div className="relative">
                 <div className="absolute inset-0 bg-[--color-neon-purple] blur-md opacity-20 group-hover:opacity-40 transition-opacity rounded-full"></div>
-                <Image src="/images/circuit1.png" alt="logo" width={50} height={50} className="relative z-10" />
+                <Image src="/images/circuit1bg.png" alt="logo" width={50} height={50} className="relative z-10" />
               </div>
               <span className="font-rajdhani text-2xl font-bold tracking-wider text-white group-hover:text-glow-purple transition-all">LUNEX</span>
             </Link>

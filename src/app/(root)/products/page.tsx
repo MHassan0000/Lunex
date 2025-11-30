@@ -54,9 +54,9 @@ export default async function ProductsPage({
 
       <div className="mx-auto max-w-7xl relative z-10">
         {/* Header */}
-        <header className="flex items-center justify-between border-b border-[--color-dark-700] py-8">
+        <header className="flex flex-col gap-4 border-b border-[--color-dark-700] py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-rajdhani text-5xl font-bold text-white uppercase tracking-wider text-glow-purple">
+            <h1 className="font-rajdhani text-3xl font-bold text-white uppercase tracking-wider text-glow-purple sm:text-4xl md:text-5xl">
               Products
             </h1>
             <p className="mt-2 text-sm text-[--color-dark-500] font-mono">

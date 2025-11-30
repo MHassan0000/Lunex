@@ -27,17 +27,17 @@ export default function Sort() {
   };
 
   return (
-    <label className="inline-flex items-center gap-3">
+    <label className="inline-flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-start">
       <span className="text-sm font-bold text-[--color-dark-500] uppercase tracking-widest">Sort by</span>
-      <div className="relative group">
+      <div className="relative group flex-1 sm:flex-none">
         <select
-          className="appearance-none rounded-sm border border-[--color-dark-700] bg-[--color-dark-900] pl-4 pr-10 py-2 text-sm font-medium text-white focus:border-[--color-neon-blue] focus:outline-none focus:ring-1 focus:ring-[--color-neon-blue] transition-all cursor-pointer hover:border-[--color-neon-blue]/50"
+          className="w-full appearance-none rounded-sm border border-[--color-dark-700] bg-[--color-dark-900] pl-4 pr-10 py-2 text-sm font-medium text-white focus:border-[--color-neon-blue] focus:outline-none focus:ring-1 focus:ring-[--color-neon-blue] transition-all cursor-pointer hover:border-[--color-neon-blue]/50 sm:w-auto"
           value={selected}
           onChange={(e) => onChange(e.target.value)}
           aria-label="Sort products"
         >
           {OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
+            <option key={o.value} value={o.value} className="text-black">
               {o.label}
             </option>
           ))}
