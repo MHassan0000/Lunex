@@ -21,7 +21,7 @@ export default function CollapsibleSection({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <section className={`border-b border-[--color-dark-700] ${className}`}>
+    <section className={`border-b border-[--color-dark-700] w-full overflow-hidden ${className}`}>
       <button
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center justify-between gap-4 py-5 text-left focus:outline-none group"

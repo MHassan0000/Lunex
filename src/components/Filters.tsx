@@ -6,7 +6,7 @@ import { getArrayParam, removeParams, toggleArrayParam } from "@/lib/utils/query
 
 const BRANDS = ["Apple", "Samsung", "Lenovo", "Sony", "Dell", "ASUS", "HP", "Google", "Xiaomi"];
 const STORAGE = ["64GB", "128GB", "256GB", "512GB", "1TB", "2TB"];
-const RAM = ["4GB", "8GB", "16GB", "32GB", "64GB"];
+const RAM = ["1GB", "2GB", "4GB", "8GB", "12GB", "16GB", "32GB", "64GB"];
 const COLORS = ["black", "white", "silver", "space-gray", "gold", "blue"];
 const PRICES = [
   { id: "0-500", label: "$0 - $500" },
@@ -116,7 +116,7 @@ export default function Filters() {
                       checked={checked}
                       onChange={() => onToggle("brand", b)}
                     />
-                    <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-black pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   </div>
                   <label htmlFor={`brand-${b}`} className="text-sm text-[--color-light-300] group-hover:text-[--color-neon-blue] transition-colors cursor-pointer font-medium tracking-wide">
                     {b}
@@ -134,7 +134,7 @@ export default function Filters() {
               return (
                 <li key={s}>
                   <label className={`flex cursor-pointer items-center justify-center rounded-sm border px-2 py-1.5 text-xs transition-all font-bold tracking-wider ${checked
-                    ? "border-[--color-neon-blue] bg-[--color-neon-blue]/20 text-[--color-neon-blue] shadow-[0_0_10px_rgba(14,165,233,0.2)]"
+                    ? "border-[--color-neon-blue] bg-white text-black shadow-[0_0_10px_rgba(14,165,233,0.2)]"
                     : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500] hover:border-[--color-neon-blue]/50 hover:text-[--color-light-300]"
                     }`}>
                     <input
@@ -158,7 +158,7 @@ export default function Filters() {
               return (
                 <li key={r}>
                   <label className={`flex cursor-pointer items-center justify-center rounded-sm border px-2 py-1.5 text-xs transition-all font-bold tracking-wider ${checked
-                    ? "border-[--color-neon-purple] bg-[--color-neon-purple]/20 text-[--color-neon-purple] shadow-[0_0_10px_rgba(168,85,247,0.2)]"
+                    ? "border-[--color-neon-purple] bg-white text-black shadow-[0_0_10px_rgba(168,85,247,0.2)]"
                     : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500] hover:border-[--color-neon-purple]/50 hover:text-[--color-light-300]"
                     }`}>
                     <input
@@ -185,10 +185,11 @@ export default function Filters() {
                     <input
                       id={`color-${c}`}
                       type="checkbox"
-                      className="peer h-4 w-4 appearance-none rounded-full border border-[--color-dark-500] bg-[--color-dark-900] checked:border-[--color-neon-blue] checked:bg-[--color-neon-blue] transition-all cursor-pointer"
+                      className="peer h-4 w-4 appearance-none rounded-full border border-[--color-dark-500] bg-[--color-dark-900] checked:border-[--color-neon-blue] checked:bg-white transition-all cursor-pointer"
                       checked={checked}
                       onChange={() => onToggle("color", c)}
                     />
+                    <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-black pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     <div className={`absolute left-6 w-3 h-3 rounded-full border border-[--color-dark-700]`} style={{ backgroundColor: c === 'space-gray' ? '#4b5563' : c }} />
                   </div>
                   <label htmlFor={`color-${c}`} className="text-sm text-[--color-light-300] capitalize group-hover:text-white cursor-pointer pl-4">
@@ -214,7 +215,7 @@ export default function Filters() {
                       checked={checked}
                       onChange={() => onToggle("price", p.id)}
                     />
-                    <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-black pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   </div>
                   <label htmlFor={`price-${p.id}`} className="text-sm text-[--color-light-300] group-hover:text-[--color-neon-green] transition-colors cursor-pointer font-medium">
                     {p.label}

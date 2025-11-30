@@ -122,29 +122,283 @@ async function seed() {
     const allCategories = await db.select().from(categories);
     const newArrivals = (await db.select().from(collections).where(eq(collections.slug, 'new-arrivals')))[0];
 
-    // Tech product generation
+    // Enhanced tech product generation with realistic specs
     const productsData = [
       // Smartphones
-      { name: 'iPhone 15 Pro', brand: 'Apple', category: 'Smartphones', basePrice: 999, images: ['/products/smartphones/phone1.png', '/products/smartphones/phone2.png', '/products/smartphones/phone3.png'] },
-      { name: 'Galaxy S24 Ultra', brand: 'Samsung', category: 'Smartphones', basePrice: 1199, images: ['/products/smartphones/phone2.png', '/products/smartphones/phone3.png', '/products/smartphones/phone1.png'] },
-      { name: 'Pixel 8 Pro', brand: 'Google', category: 'Smartphones', basePrice: 899, images: ['/products/smartphones/phone3.png', '/products/smartphones/phone1.png', '/products/smartphones/phone2.png'] },
+      {
+        name: 'iPhone 15 Pro',
+        brand: 'Apple',
+        category: 'Smartphones',
+        basePrice: 999,
+        images: ['/products/smartphones/phone1.png', '/products/smartphones/phone2.png', '/products/smartphones/phone3.png'],
+        specs: {
+          display: '6.1" Super Retina XDR OLED',
+          resolution: '2556 x 1179 pixels',
+          processor: 'A17 Pro Bionic',
+          camera: '48MP Main + 12MP Ultra Wide + 12MP Telephoto',
+          frontCamera: '12MP TrueDepth',
+          battery: '3274 mAh',
+          charging: '20W Fast Charging, MagSafe',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          os: 'iOS 17',
+          waterResistance: 'IP68',
+        }
+      },
+      {
+        name: 'Galaxy S24 Ultra',
+        brand: 'Samsung',
+        category: 'Smartphones',
+        basePrice: 1199,
+        images: ['/products/smartphones/phone2.png', '/products/smartphones/phone3.png', '/products/smartphones/phone1.png'],
+        specs: {
+          display: '6.8" Dynamic AMOLED 2X',
+          resolution: '3120 x 1440 pixels, 120Hz',
+          processor: 'Snapdragon 8 Gen 3',
+          camera: '200MP Main + 50MP Periscope + 12MP Ultra Wide + 10MP Telephoto',
+          frontCamera: '12MP',
+          battery: '5000 mAh',
+          charging: '45W Super Fast Charging',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.3',
+          os: 'Android 14, One UI 6',
+          waterResistance: 'IP68',
+          sPen: 'Included',
+        }
+      },
+      {
+        name: 'Pixel 8 Pro',
+        brand: 'Google',
+        category: 'Smartphones',
+        basePrice: 899,
+        images: ['/products/smartphones/phone3.png', '/products/smartphones/phone1.png', '/products/smartphones/phone2.png'],
+        specs: {
+          display: '6.7" LTPO OLED',
+          resolution: '2992 x 1344 pixels, 120Hz',
+          processor: 'Google Tensor G3',
+          camera: '50MP Main + 48MP Ultra Wide + 48MP Telephoto',
+          frontCamera: '10.5MP',
+          battery: '5050 mAh',
+          charging: '30W Fast Charging',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.3',
+          os: 'Android 14',
+          waterResistance: 'IP68',
+          aiFeatures: 'Magic Eraser, Best Take, Audio Magic Eraser',
+        }
+      },
 
       // Laptops
-      { name: 'MacBook Air M3', brand: 'Apple', category: 'Laptops', basePrice: 1099, images: ['/products/laptops/laptop1.png', '/products/laptops/laptop2.png'] },
-      { name: 'XPS 15', brand: 'Dell', category: 'Laptops', basePrice: 1499, images: ['/products/laptops/laptop2.png', '/products/laptops/laptop3.png'] },
-      { name: 'ThinkPad X1 Carbon', brand: 'Lenovo', category: 'Laptops', basePrice: 1699, images: ['/products/laptops/laptop3.png', '/products/laptops/laptop4.png'] },
-      { name: 'ZenBook Pro', brand: 'ASUS', category: 'Laptops', basePrice: 1299, images: ['/products/laptops/laptop4.png', '/products/laptops/laptop1.png'] },
+      {
+        name: 'MacBook Air M3',
+        brand: 'Apple',
+        category: 'Laptops',
+        basePrice: 1099,
+        images: ['/products/laptops/laptop1.png', '/products/laptops/laptop2.png'],
+        specs: {
+          display: '13.6" Liquid Retina',
+          resolution: '2560 x 1664 pixels',
+          processor: 'Apple M3 Chip (8-core CPU)',
+          gpu: '8-core or 10-core GPU',
+          battery: 'Up to 18 hours',
+          ports: '2x Thunderbolt 4, MagSafe 3, 3.5mm jack',
+          weight: '2.7 lbs (1.24 kg)',
+          os: 'macOS Sonoma',
+          keyboard: 'Backlit Magic Keyboard',
+          touchId: 'Yes',
+        }
+      },
+      {
+        name: 'XPS 15',
+        brand: 'Dell',
+        category: 'Laptops',
+        basePrice: 1499,
+        images: ['/products/laptops/laptop2.png', '/products/laptops/laptop3.png'],
+        specs: {
+          display: '15.6" InfinityEdge',
+          resolution: '1920 x 1200 or 3456 x 2160 OLED',
+          processor: 'Intel Core i7-13700H',
+          gpu: 'NVIDIA GeForce RTX 4050',
+          battery: '86 WHr, up to 13 hours',
+          ports: '2x Thunderbolt 4, USB-C, SD card reader',
+          weight: '4.23 lbs (1.92 kg)',
+          os: 'Windows 11 Pro',
+          keyboard: 'Backlit with fingerprint reader',
+          webcam: '720p HD',
+        }
+      },
+      {
+        name: 'ThinkPad X1 Carbon',
+        brand: 'Lenovo',
+        category: 'Laptops',
+        basePrice: 1699,
+        images: ['/products/laptops/laptop3.png', '/products/laptops/laptop4.png'],
+        specs: {
+          display: '14" WUXGA IPS',
+          resolution: '1920 x 1200 pixels',
+          processor: 'Intel Core i7-1365U',
+          gpu: 'Intel Iris Xe Graphics',
+          battery: '57 WHr, up to 16 hours',
+          ports: '2x Thunderbolt 4, 2x USB-A, HDMI 2.0',
+          weight: '2.48 lbs (1.12 kg)',
+          os: 'Windows 11 Pro',
+          keyboard: 'Backlit with TrackPoint',
+          security: 'Fingerprint reader, IR camera',
+        }
+      },
+      {
+        name: 'ZenBook Pro',
+        brand: 'ASUS',
+        category: 'Laptops',
+        basePrice: 1299,
+        images: ['/products/laptops/laptop4.png', '/products/laptops/laptop1.png'],
+        specs: {
+          display: '14.5" OLED 2.8K',
+          resolution: '2880 x 1800 pixels, 120Hz',
+          processor: 'Intel Core i9-13900H',
+          gpu: 'NVIDIA GeForce RTX 4060',
+          battery: '76 WHr, up to 10 hours',
+          ports: 'Thunderbolt 4, USB-A, HDMI 2.1, SD card',
+          weight: '3.53 lbs (1.6 kg)',
+          os: 'Windows 11 Home',
+          keyboard: 'Backlit ErgoSense',
+          dialPad: 'ASUS DialPad',
+        }
+      },
 
       // Audio
-      { name: 'WH-1000XM5', brand: 'Sony', category: 'Headphones', basePrice: 349, images: ['/products/audio/headphone1.png', '/products/audio/headphone2.png'] },
-      { name: 'AirPods Max', brand: 'Apple', category: 'Headphones', basePrice: 549, images: ['/products/audio/headphone2.png', '/products/audio/headphone3.png'] },
-      { name: 'Galaxy Buds2 Pro', brand: 'Samsung', category: 'Headphones', basePrice: 229, images: ['/products/audio/headphone3.png', '/products/audio/headphone4.png'] },
-      { name: 'Pixel Buds Pro', brand: 'Google', category: 'Headphones', basePrice: 199, images: ['/products/audio/headphone4.png', '/products/audio/headphone1.png'] },
+      {
+        name: 'WH-1000XM5',
+        brand: 'Sony',
+        category: 'Headphones',
+        basePrice: 349,
+        images: ['/products/audio/headphone1.png', '/products/audio/headphone2.png'],
+        specs: {
+          type: 'Over-Ear Wireless',
+          driver: '30mm',
+          frequencyResponse: '4Hz - 40kHz',
+          noiseCancellation: 'Industry-leading ANC',
+          battery: 'Up to 30 hours (ANC on)',
+          charging: 'USB-C, Quick charge (3 min = 3 hours)',
+          connectivity: 'Bluetooth 5.2, LDAC, AAC',
+          multipoint: 'Yes (2 devices)',
+          voiceAssistant: 'Alexa, Google Assistant',
+          weight: '250g',
+        }
+      },
+      {
+        name: 'AirPods Max',
+        brand: 'Apple',
+        category: 'Headphones',
+        basePrice: 549,
+        images: ['/products/audio/headphone2.png', '/products/audio/headphone3.png'],
+        specs: {
+          type: 'Over-Ear Wireless',
+          driver: '40mm dynamic',
+          frequencyResponse: '10Hz - 20kHz',
+          noiseCancellation: 'Active Noise Cancellation',
+          battery: 'Up to 20 hours (ANC on)',
+          charging: 'Lightning connector',
+          connectivity: 'Bluetooth 5.0, Apple H1 chip',
+          spatialAudio: 'Yes with dynamic head tracking',
+          transparency: 'Transparency mode',
+          weight: '384.8g',
+        }
+      },
+      {
+        name: 'Galaxy Buds2 Pro',
+        brand: 'Samsung',
+        category: 'Headphones',
+        basePrice: 229,
+        images: ['/products/audio/headphone3.png', '/products/audio/headphone4.png'],
+        specs: {
+          type: 'True Wireless Earbuds',
+          driver: '10mm + 5.3mm 2-way',
+          frequencyResponse: '20Hz - 20kHz',
+          noiseCancellation: 'Intelligent ANC',
+          battery: '5 hours (ANC on), 18 hours with case',
+          charging: 'USB-C, Wireless charging',
+          connectivity: 'Bluetooth 5.3, Samsung Seamless Codec',
+          waterResistance: 'IPX7',
+          voiceDetect: 'Yes',
+          weight: '5.5g per earbud',
+        }
+      },
+      {
+        name: 'Pixel Buds Pro',
+        brand: 'Google',
+        category: 'Headphones',
+        basePrice: 199,
+        images: ['/products/audio/headphone4.png', '/products/audio/headphone1.png'],
+        specs: {
+          type: 'True Wireless Earbuds',
+          driver: '11mm',
+          frequencyResponse: '20Hz - 20kHz',
+          noiseCancellation: 'Active Noise Cancellation',
+          battery: '7 hours (ANC on), 20 hours with case',
+          charging: 'USB-C, Wireless charging',
+          connectivity: 'Bluetooth 5.0, AAC, SBC',
+          waterResistance: 'IPX4',
+          spatialAudio: 'Yes',
+          weight: '6.2g per earbud',
+        }
+      },
 
       // Wearables
-      { name: 'Watch Series 9', brand: 'Apple', category: 'Smartwatches', basePrice: 399, images: ['/products/wearables/watch1.png', '/products/wearables/watch2.png'] },
-      { name: 'Galaxy Watch 6', brand: 'Samsung', category: 'Smartwatches', basePrice: 299, images: ['/products/wearables/watch2.png', '/products/wearables/watch3.png'] },
-      { name: 'Pixel Watch 2', brand: 'Google', category: 'Smartwatches', basePrice: 349, images: ['/products/wearables/watch3.png', '/products/wearables/watch1.png'] },
+      {
+        name: 'Watch Series 9',
+        brand: 'Apple',
+        category: 'Smartwatches',
+        basePrice: 399,
+        images: ['/products/wearables/watch1.png', '/products/wearables/watch2.png'],
+        specs: {
+          display: '1.9" LTPO OLED Retina',
+          resolution: '484 x 396 pixels',
+          processor: 'S9 SiP (64-bit dual-core)',
+          sensors: 'Heart rate, ECG, Blood oxygen, Accelerometer, Gyroscope',
+          battery: 'Up to 18 hours',
+          charging: 'Magnetic fast charging',
+          connectivity: 'Wi-Fi, Bluetooth 5.3, GPS, Cellular (optional)',
+          waterResistance: '50m (5 ATM)',
+          os: 'watchOS 10',
+          compatibility: 'iPhone XS or later',
+        }
+      },
+      {
+        name: 'Galaxy Watch 6',
+        brand: 'Samsung',
+        category: 'Smartwatches',
+        basePrice: 299,
+        images: ['/products/wearables/watch2.png', '/products/wearables/watch3.png'],
+        specs: {
+          display: '1.5" Super AMOLED',
+          resolution: '480 x 480 pixels',
+          processor: 'Exynos W930 (5nm)',
+          sensors: 'Heart rate, ECG, Blood pressure, Body composition, Sleep tracking',
+          battery: 'Up to 40 hours',
+          charging: 'Wireless fast charging',
+          connectivity: 'Wi-Fi, Bluetooth 5.3, GPS, LTE (optional)',
+          waterResistance: '50m (5 ATM)',
+          os: 'Wear OS 4 with One UI Watch 5',
+          compatibility: 'Android 8.0 or later',
+        }
+      },
+      {
+        name: 'Pixel Watch 2',
+        brand: 'Google',
+        category: 'Smartwatches',
+        basePrice: 349,
+        images: ['/products/wearables/watch3.png', '/products/wearables/watch1.png'],
+        specs: {
+          display: '1.2" AMOLED',
+          resolution: '384 x 384 pixels',
+          processor: 'Qualcomm SW5100',
+          sensors: 'Heart rate, ECG, Skin temperature, Stress tracking, SpO2',
+          battery: 'Up to 24 hours',
+          charging: 'Magnetic USB-C charging',
+          connectivity: 'Wi-Fi, Bluetooth 5.0, GPS, LTE (optional)',
+          waterResistance: '50m (5 ATM)',
+          os: 'Wear OS 4',
+          compatibility: 'Android 9.0 or later',
+        }
+      },
     ];
 
     log('Creating products with variants');
@@ -162,7 +416,7 @@ async function seed() {
         categoryId: category.id,
         brandId: brand.id,
         model: p.name,
-        specs: { cpu: 'Latest Gen', display: 'OLED', battery: 'All Day' },
+        specs: p.specs,
         warrantyMonths: 12,
         releaseYear: 2024,
         isPublished: true,
@@ -177,8 +431,18 @@ async function seed() {
       const variantIds: string[] = [];
       let defaultVariantId: string | null = null;
 
+      // Determine RAM based on category
+      const ramOptions = category.name === 'Smartphones'
+        ? ['8GB', '12GB', '16GB']
+        : category.name === 'Laptops'
+          ? ['16GB', '32GB', '64GB']
+          : category.name === 'Smartwatches'
+            ? ['1GB', '2GB']
+            : ['4GB', '8GB'];
+
       for (const color of colorChoices) {
         for (const storageOption of storageChoices) {
+          const ramOption = ramOptions[Math.floor(Math.random() * ramOptions.length)];
           const priceNum = Number((p.basePrice + (storageOption.sortOrder * 50)).toFixed(2));
           const sku = `${brand.slug.toUpperCase().slice(0, 3)}-${insertedProduct.id.slice(0, 4)}-${color.slug.slice(0, 3).toUpperCase()}-${storageOption.slug.toUpperCase()}`;
 
@@ -188,7 +452,7 @@ async function seed() {
             price: priceNum.toFixed(2),
             colorId: color.id,
             storageId: storageOption.id,
-            ram: '8GB', // Default for now
+            ram: ramOption,
             inStock: randInt(10, 100),
             weight: 0.5,
           });

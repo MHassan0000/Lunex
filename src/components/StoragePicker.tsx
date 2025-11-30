@@ -32,7 +32,7 @@ export default function StoragePicker({ productId, className = "" }: StoragePick
               onClick={() => setSelection(productId, "storage", isActive ? "" : s)}
               className={`rounded-sm border px-3 py-3 text-center text-sm font-bold transition-all focus:outline-none ${isActive
                 ? "border-[--color-neon-blue] bg-[--color-neon-blue]/20 text-[--color-neon-blue] shadow-[0_0_15px_rgba(0,243,255,0.2)]"
-                : "border-[--color-dark-700] bg-[--color-dark-900] text-[--color-dark-500] hover:border-[--color-neon-blue]/50 hover:text-[--color-light-300]"
+                : "border-gray-700 bg-gray-900 text-[--color-dark-500] hover:border-[--color-neon-blue]/50 hover:text-[--color-light-300]"
                 }`}
               aria-pressed={isActive}
             >

@@ -150,34 +150,34 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const specs = product.specs as Record<string, string> | null;
 
   return (
-    <main className="min-h-screen bg-[--color-dark-950] pb-20 relative">
+    <main className="min-h-screen bg-[--color-dark-950] pb-20 relative overflow-x-hidden">
       {/* Background Texture */}
       <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-        <nav className="py-6 text-xs font-bold uppercase tracking-widest text-[--color-dark-500]">
-          <Link href="/" className="hover:text-[--color-neon-blue] transition-colors">Home</Link> <span className="text-[--color-dark-700]">/</span> <Link href="/products" className="hover:text-[--color-neon-blue] transition-colors">Products</Link> <span className="text-[--color-dark-700]">/</span>{" "}
-          <span className="text-[--color-neon-purple]">{product.name}</span>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+        <nav className="py-6 text-xs font-bold uppercase tracking-wide sm:tracking-widest text-[--color-dark-500] flex flex-wrap items-center gap-x-2">
+          <Link href="/" className="hover:text-[--color-neon-blue] transition-colors">Home</Link> <span className="text-[--color-dark-700]">/</span> <Link href="/products" className="hover:text-[--color-neon-blue] transition-colors">Products</Link> <span className="text-[--color-dark-700]">/</span>
+          <span className="text-[--color-neon-purple] break-words">{product.name}</span>
         </nav>
 
-        <section className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_480px]">
+        <section className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_480px] w-full">
           {galleryVariants.length > 0 && (
             <ProductGallery productId={product.id} variants={galleryVariants} className="lg:sticky lg:top-24" />
           )}
 
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-8 min-w-0">
             <header className="flex flex-col gap-2 border-b border-[--color-dark-700] pb-6">
               {product.brand && (
-                <Link href={`/products?brand=${product.brand.slug}`} className="text-sm font-bold uppercase tracking-widest text-[--color-neon-blue] hover:text-white transition-colors w-fit">
+                <Link href={`/products?brand=${product.brand.slug}`} className="text-sm font-bold uppercase tracking-wide sm:tracking-widest text-[--color-neon-blue] hover:text-white transition-colors w-fit">
                   {product.brand.name}
                 </Link>
               )}
-              <h1 className="font-rajdhani text-5xl font-bold text-white sm:text-6xl uppercase tracking-wide">{product.name}</h1>
+              <h1 className="font-rajdhani text-3xl font-bold text-white sm:text-4xl md:text-5xl lg:text-6xl uppercase tracking-tight sm:tracking-normal md:tracking-wide break-words overflow-wrap-anywhere">{product.name}</h1>
               {product.model && <p className="text-sm text-[--color-dark-500] font-mono">Model: <span className="text-[--color-light-300]">{product.model}</span></p>}
             </header>
 
-            <div className="flex items-center gap-4">
-              <p className="font-rajdhani text-4xl font-bold text-white text-glow-purple">{formatPrice(displayPrice)}</p>
+            <div className="flex flex-wrap items-center gap-4">
+              <p className="font-rajdhani text-3xl sm:text-4xl font-bold text-white text-glow-purple">{formatPrice(displayPrice)}</p>
               {compareAt && (
                 <>
                   <span className="text-xl text-[--color-dark-500] line-through decoration-[--color-neon-red] decoration-2">{formatPrice(compareAt)}</span>
@@ -190,7 +190,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               )}
             </div>
 
-            <div className="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider text-[--color-light-300]">
+            <div className="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-normal sm:tracking-wider text-[--color-light-300]">
               {product.releaseYear && (
                 <div className="flex items-center gap-2 rounded-sm border border-[--color-dark-700] bg-[--color-dark-800] px-3 py-1.5">
                   <Calendar className="h-4 w-4 text-[--color-neon-purple]" />
@@ -205,27 +205,27 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               )}
             </div>
 
-            <div className="space-y-6 p-6 rounded-xl glass-panel-rpg">
+            <div className="space-y-6 p-4 sm:p-6 rounded-xl glass-panel-rpg w-full">
               <ColorSwatches productId={product.id} variants={galleryVariants} />
               <StoragePicker productId={product.id} />
 
               <div className="flex flex-col gap-4 mt-2">
                 <AddToCartButton productId={product.id} variants={variants} />
-                <button className="flex items-center justify-center gap-2 rounded-sm border border-[--color-neon-purple] bg-transparent px-6 py-4 font-bold text-[--color-neon-purple] uppercase tracking-widest transition-all hover:bg-[--color-neon-purple] hover:text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] focus:outline-none">
+                <button className="flex items-center justify-center gap-2 rounded-sm border border-[--color-neon-purple] bg-transparent px-4 sm:px-6 py-4 font-bold text-[--color-neon-purple] uppercase tracking-wide sm:tracking-widest transition-all hover:bg-[--color-neon-purple] hover:text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] focus:outline-none text-sm sm:text-base">
                   <Heart className="h-5 w-5" />
                   Add to Wishlist
                 </button>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 w-full overflow-hidden">
               <CollapsibleSection title="Tech Specs" defaultOpen>
                 {specs ? (
-                  <div className="grid grid-cols-1 gap-y-3 text-sm">
+                  <div className="grid grid-cols-1 gap-y-3 text-sm w-full">
                     {Object.entries(specs).map(([key, value]) => (
-                      <div key={key} className="flex justify-between border-b border-[--color-dark-700] py-2 last:border-0 group hover:bg-[--color-dark-800]/50 px-2 transition-colors rounded-sm">
-                        <span className="font-bold text-[--color-dark-500] uppercase tracking-wider group-hover:text-[--color-neon-blue] transition-colors">{key.replace(/([A-Z])/g, " $1").trim()}</span>
-                        <span className="text-white text-right font-mono">{String(value)}</span>
+                      <div key={key} className="flex flex-col sm:flex-row sm:justify-between gap-2 border-b border-[--color-dark-700] py-2 last:border-0 group hover:bg-[--color-dark-800]/50 px-2 transition-colors rounded-sm overflow-hidden">
+                        <span className="font-bold text-[--color-dark-500] uppercase tracking-normal sm:tracking-wider group-hover:text-[--color-neon-blue] transition-colors break-words max-w-full">{key.replace(/([A-Z])/g, " $1").trim()}</span>
+                        <span className="text-white sm:text-right font-mono break-words max-w-full overflow-wrap-anywhere text-xs sm:text-sm">{String(value)}</span>
                       </div>
                     ))}
                   </div>
