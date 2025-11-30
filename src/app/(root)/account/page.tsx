@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Package, MapPin, CreditCard } from "lucide-react";
 import { SignOutButton } from "@/components/SignOutButton";
+import DarkVeil from "@/components/DarkVeil";
 
 export default async function AccountPage() {
     const user = await getCurrentUser();
@@ -56,7 +57,10 @@ export default async function AccountPage() {
     );
 
     return (
-        <main className="min-h-screen bg-[--color-dark-950] pt-20 pb-20 animate-fade-in relative">
+        <main className="min-h-screen pt-20 pb-20 animate-fade-in relative">
+            <div className="fixed inset-0 z-0">
+                <DarkVeil />
+            </div>
             {/* Background Texture */}
             <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
 

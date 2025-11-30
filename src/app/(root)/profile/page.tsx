@@ -5,6 +5,7 @@ import { Card } from "@/components";
 import { Heart, ShoppingBag } from "lucide-react";
 import RemoveFromWishlistButton from "@/components/RemoveFromWishlistButton";
 import GuestWishlist from "@/components/GuestWishlist";
+import DarkVeil from "@/components/DarkVeil";
 
 export default async function ProfilePage() {
     const user = await getCurrentUser();
@@ -17,7 +18,10 @@ export default async function ProfilePage() {
     const { items } = await getWishlist();
 
     return (
-        <main className="min-h-screen bg-[--color-dark-950] pb-20 relative">
+        <main className="min-h-screen pb-20 relative">
+            <div className="fixed inset-0 z-0">
+                <DarkVeil />
+            </div>
             {/* Background Texture */}
             <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
 

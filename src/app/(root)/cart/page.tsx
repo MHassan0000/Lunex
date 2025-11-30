@@ -2,6 +2,7 @@ import { getCart } from "@/lib/actions/cart";
 import CartList from "@/components/CartList";
 import CheckoutButton from "@/components/CheckoutButton";
 import { ShieldCheck } from "lucide-react";
+import DarkVeil from "@/components/DarkVeil";
 
 export default async function CartPage() {
     const cart = await getCart();
@@ -11,7 +12,10 @@ export default async function CartPage() {
     const total = subtotal + shipping;
 
     return (
-        <main className="min-h-screen bg-[--color-dark-950] pt-20 pb-20 animate-fade-in relative">
+        <main className="min-h-screen pt-20 pb-20 animate-fade-in relative">
+            <div className="fixed inset-0 z-0">
+                <DarkVeil />
+            </div>
             {/* Background Texture */}
             <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
 

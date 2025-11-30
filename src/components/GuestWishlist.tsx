@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useWishlistStore } from "@/store/wishlist";
 import { Heart, ShoppingBag, LogIn } from "lucide-react";
 import { useEffect, useState } from "react";
+import DarkVeil from "@/components/DarkVeil";
 
 export default function GuestWishlist() {
     const { items } = useWishlistStore();
@@ -15,7 +16,10 @@ export default function GuestWishlist() {
 
     if (!mounted) {
         return (
-            <main className="min-h-screen bg-[--color-dark-950] pb-20 relative">
+            <main className="min-h-screen pb-20 relative">
+                <div className="fixed inset-0 z-0">
+                    <DarkVeil />
+                </div>
                 <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 pt-8">
                     <div className="glass-panel-rpg rounded-xl p-12 text-center">
@@ -29,7 +33,10 @@ export default function GuestWishlist() {
     const wishlistCount = items.size;
 
     return (
-        <main className="min-h-screen bg-[--color-dark-950] pb-20 relative">
+        <main className="min-h-screen pb-20 relative">
+            <div className="fixed inset-0 z-0">
+                <DarkVeil />
+            </div>
             {/* Background Texture */}
             <div className="absolute inset-0 bg-[url('/images/grid.png')] opacity-5 pointer-events-none fixed" />
 
