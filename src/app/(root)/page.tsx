@@ -171,7 +171,7 @@ const Home = async () => {
                   key={p.id}
                   title={p.name}
                   subtitle={p.subtitle || "Electronics"}
-                  imageSrc={p.imageUrl || "/shoes/shoe-1.jpg"}
+                  imageSrc={p.imageUrl || "/products/laptops/laptop1.png"}
                   price={p.minPrice || 0}
                   href={`/products/${p.id}`}
                   badge={

@@ -5,9 +5,9 @@ import {
   insertColorSchema, insertStorageSchema, insertBrandSchema,
   insertCategorySchema, insertCollectionSchema, insertProductSchema, insertVariantSchema, insertProductImageSchema,
   type InsertProduct, type InsertVariant, type InsertProductImage,
+  orderItems, reviews, cartItems, wishlists,
 } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-
 
 type ProductRow = typeof products.$inferSelect;
 type VariantRow = typeof productVariants.$inferSelect;
@@ -33,6 +33,19 @@ function randInt(min: number, max: number) {
 
 async function seed() {
   try {
+    log('Clearing existing data...');
+    // Clear dependent tables first to avoid FK violations
+    await db.delete(orderItems);
+    await db.delete(reviews);
+    await db.delete(cartItems);
+    await db.delete(wishlists);
+
+    // Then clear product data
+    await db.delete(productImages);
+    await db.delete(productVariants);
+    await db.delete(productCollections);
+    await db.delete(products);
+
     log('Seeding filters: colors, storage');
 
     const colorRows = [
@@ -109,18 +122,29 @@ async function seed() {
     const allCategories = await db.select().from(categories);
     const newArrivals = (await db.select().from(collections).where(eq(collections.slug, 'new-arrivals')))[0];
 
-    // Dummy product generation
+    // Tech product generation
     const productsData = [
-      { name: 'iPhone 15 Pro', brand: 'Apple', category: 'Smartphones', basePrice: 999 },
-      { name: 'Galaxy S24 Ultra', brand: 'Samsung', category: 'Smartphones', basePrice: 1199 },
-      { name: 'MacBook Air M3', brand: 'Apple', category: 'Laptops', basePrice: 1099 },
-      { name: 'XPS 15', brand: 'Dell', category: 'Laptops', basePrice: 1499 },
-      { name: 'iPad Pro', brand: 'Apple', category: 'Tablets', basePrice: 799 },
-      { name: 'Galaxy Tab S9', brand: 'Samsung', category: 'Tablets', basePrice: 899 },
-      { name: 'WH-1000XM5', brand: 'Sony', category: 'Headphones', basePrice: 349 },
-      { name: 'Pixel 8 Pro', brand: 'Google', category: 'Smartphones', basePrice: 899 },
-      { name: 'Watch Series 9', brand: 'Apple', category: 'Smartwatches', basePrice: 399 },
-      { name: 'ThinkPad X1 Carbon', brand: 'Lenovo', category: 'Laptops', basePrice: 1699 },
+      // Smartphones
+      { name: 'iPhone 15 Pro', brand: 'Apple', category: 'Smartphones', basePrice: 999, images: ['/products/smartphones/phone1.png', '/products/smartphones/phone2.png', '/products/smartphones/phone3.png'] },
+      { name: 'Galaxy S24 Ultra', brand: 'Samsung', category: 'Smartphones', basePrice: 1199, images: ['/products/smartphones/phone2.png', '/products/smartphones/phone3.png', '/products/smartphones/phone1.png'] },
+      { name: 'Pixel 8 Pro', brand: 'Google', category: 'Smartphones', basePrice: 899, images: ['/products/smartphones/phone3.png', '/products/smartphones/phone1.png', '/products/smartphones/phone2.png'] },
+
+      // Laptops
+      { name: 'MacBook Air M3', brand: 'Apple', category: 'Laptops', basePrice: 1099, images: ['/products/laptops/laptop1.png', '/products/laptops/laptop2.png'] },
+      { name: 'XPS 15', brand: 'Dell', category: 'Laptops', basePrice: 1499, images: ['/products/laptops/laptop2.png', '/products/laptops/laptop3.png'] },
+      { name: 'ThinkPad X1 Carbon', brand: 'Lenovo', category: 'Laptops', basePrice: 1699, images: ['/products/laptops/laptop3.png', '/products/laptops/laptop4.png'] },
+      { name: 'ZenBook Pro', brand: 'ASUS', category: 'Laptops', basePrice: 1299, images: ['/products/laptops/laptop4.png', '/products/laptops/laptop1.png'] },
+
+      // Audio
+      { name: 'WH-1000XM5', brand: 'Sony', category: 'Headphones', basePrice: 349, images: ['/products/audio/headphone1.png', '/products/audio/headphone2.png'] },
+      { name: 'AirPods Max', brand: 'Apple', category: 'Headphones', basePrice: 549, images: ['/products/audio/headphone2.png', '/products/audio/headphone3.png'] },
+      { name: 'Galaxy Buds2 Pro', brand: 'Samsung', category: 'Headphones', basePrice: 229, images: ['/products/audio/headphone3.png', '/products/audio/headphone4.png'] },
+      { name: 'Pixel Buds Pro', brand: 'Google', category: 'Headphones', basePrice: 199, images: ['/products/audio/headphone4.png', '/products/audio/headphone1.png'] },
+
+      // Wearables
+      { name: 'Watch Series 9', brand: 'Apple', category: 'Smartwatches', basePrice: 399, images: ['/products/wearables/watch1.png', '/products/wearables/watch2.png'] },
+      { name: 'Galaxy Watch 6', brand: 'Samsung', category: 'Smartwatches', basePrice: 299, images: ['/products/wearables/watch2.png', '/products/wearables/watch3.png'] },
+      { name: 'Pixel Watch 2', brand: 'Google', category: 'Smartwatches', basePrice: 349, images: ['/products/wearables/watch3.png', '/products/wearables/watch1.png'] },
     ];
 
     log('Creating products with variants');
@@ -130,7 +154,7 @@ async function seed() {
 
       if (!brand || !category) continue;
 
-      const desc = `The new ${p.name} from ${p.brand} features cutting-edge technology and premium design.`;
+      const desc = `The new ${p.name} from ${p.brand} features cutting-edge technology and premium design. Experience the best in ${p.category.toLowerCase()} with this flagship device.`;
 
       const product = insertProductSchema.parse({
         name: p.name,
@@ -138,7 +162,7 @@ async function seed() {
         categoryId: category.id,
         brandId: brand.id,
         model: p.name,
-        specs: { cpu: 'Latest Gen', display: 'OLED' },
+        specs: { cpu: 'Latest Gen', display: 'OLED', battery: 'All Day' },
         warrantyMonths: 12,
         releaseYear: 2024,
         isPublished: true,
@@ -188,16 +212,11 @@ async function seed() {
         });
       }
 
-      // Add product images using existing shoe images
-      const imageUrls = [
-        '/shoes/shoe-1.jpg',
-        '/shoes/shoe-2.webp',
-        '/shoes/shoe-3.webp',
-        '/shoes/shoe-4.webp',
-      ];
+      // Add product images
+      const imageUrls = p.images;
 
       // Add one primary image for the product (not variant-specific)
-      const primaryImageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+      const primaryImageUrl = imageUrls[0];
       await db.insert(productImages).values(insertProductImageSchema.parse({
         productId: insertedProduct.id,
         variantId: null, // Product-level image
@@ -207,8 +226,8 @@ async function seed() {
       }) as InsertProductImage);
 
       // Add variant-specific images
-      for (let i = 0; i < Math.min(variantIds.length, 3); i++) {
-        const variantImageUrl = imageUrls[(i + 1) % imageUrls.length];
+      for (let i = 0; i < Math.min(variantIds.length, imageUrls.length); i++) {
+        const variantImageUrl = imageUrls[i % imageUrls.length];
         await db.insert(productImages).values(insertProductImageSchema.parse({
           productId: insertedProduct.id,
           variantId: variantIds[i],
