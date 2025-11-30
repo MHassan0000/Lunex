@@ -160,9 +160,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <span className="text-[--color-neon-purple] break-words">{product.name}</span>
         </nav>
 
-        <section className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_480px] w-full">
+        <section className="grid grid-cols-1 gap-6 md:gap-8 xl:grid-cols-[1fr_480px] w-full">
           {galleryVariants.length > 0 && (
-            <ProductGallery productId={product.id} variants={galleryVariants} className="lg:sticky lg:top-24" />
+            <ProductGallery productId={product.id} variants={galleryVariants} className="xl:sticky xl:top-24" />
           )}
 
           <div className="flex flex-col gap-8 min-w-0">

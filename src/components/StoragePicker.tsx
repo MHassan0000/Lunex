@@ -23,14 +23,14 @@ export default function StoragePicker({ productId, className = "" }: StoragePick
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-full">
         {STORAGE_OPTIONS.map((s) => {
           const isActive = selected === s;
           return (
             <button
               key={s}
               onClick={() => setSelection(productId, "storage", isActive ? "" : s)}
-              className={`rounded-sm border px-3 py-3 text-center text-sm font-bold transition-all focus:outline-none ${isActive
+              className={`rounded-sm border px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm font-bold transition-all focus:outline-none ${isActive
                 ? "border-[--color-neon-blue] bg-[--color-neon-blue]/20 text-[--color-neon-blue] shadow-[0_0_15px_rgba(0,243,255,0.2)]"
                 : "border-gray-700 bg-gray-900 text-[--color-dark-500] hover:border-[--color-neon-blue]/50 hover:text-[--color-light-300]"
                 }`}
