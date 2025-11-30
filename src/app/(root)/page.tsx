@@ -53,7 +53,7 @@ const Home = async () => {
         ">
           <div className="max-w-5xl mt-20 flex flex-col justify-center items-center gap-2">
             <ScrambledText
-              className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl capitalize font-bold leading-tight text-white text-center"
+              className="font-rajdhani text-6xl sm:text-6xl md:text-6xl lg:text-7xl xl:text-8xl capitalize font-bold leading-tight text-white text-center"
               radius={100}
               duration={1.2}
               speed={0.5}
@@ -62,7 +62,7 @@ const Home = async () => {
             </ScrambledText>
 
             <ScrambledText
-              className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl capitalize font-bold leading-tight text-white text-[--color-neon-blue] text-center"
+              className="font-rajdhani text-6xl sm:text-6xl md:text-6xl lg:text-7xl xl:text-8xl capitalize font-bold leading-tight text-white text-[--color-neon-blue] text-center"
               radius={100}
               duration={1.2}
               speed={0.5}
