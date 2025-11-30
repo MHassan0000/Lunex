@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Shuffle from "@/components/Shuffle";
 import { GridScan } from "@/components/GridScan";
+import ScrambledText from "@/components/ScrambledText";
 
 const CATEGORIES = [
   { name: "Smartphones", slug: "smartphones", image: "/images/smartphones.png" },
@@ -51,38 +52,33 @@ const Home = async () => {
         {/* Hero Content */}
         <div className="relative mx-auto flex min-h-[600px] md:min-h-[700px] max-w-7xl flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 text-center
         ">
-          <div className="max-w-3xl mt-20">
-            <h1 >
-              <Shuffle text="Level Up"
-                shuffleDirection="right"
-                duration={0.35}
-                animationMode="evenodd"
-                shuffleTimes={1}
-                ease="power3.out"
-                stagger={0.03}
-                threshold={0.1}
-                triggerOnce={true}
-                triggerOnHover={true}
-                respectReducedMotion={true}
-                className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold capitalize leading-tight text-white" /> <br />
+          <div className="max-w-5xl mt-20 border-1 border-white flex-col justify-center items-center gap-10">
 
-            </h1>
-            <h1>
-              <Shuffle text="Your Tech"
-                shuffleDirection="right"
-                duration={0.35}
-                animationMode="evenodd"
-                shuffleTimes={1}
-                ease="power3.out"
-                stagger={0.03}
-                threshold={0.1}
-                triggerOnce={true}
-                triggerOnHover={true}
-                respectReducedMotion={true}
-                className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl capitalize font-bold  leading-tight  text-white text-[--color-neon-blue]" /> <br />
+            <ScrambledText
+              className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl  capitalize font-bold  leading-tight  text-white text-[--color-neon-blue] border-1 border-white px-10 py-5"
+              radius={100}
+              duration={1.2}
+              speed={0.5}
+              scrambleChars={":."}>
+              Level Up
 
-            </h1>
-            <p className="mt-4 md:mt-6 max-w-xl text-base md:text-lg text-[--color-light-300]">
+            </ScrambledText>
+
+
+
+            <ScrambledText
+              className="font-rajdhani text-4xl sm:text-5xl md:text-6xl lg:text-7xl  capitalize font-bold  leading-tight  text-white text-[--color-neon-blue] border-1 border-white px-10 py-5"
+              radius={100}
+              duration={1.2}
+              speed={0.5}
+              scrambleChars={":."}>
+              Your Tech
+
+            </ScrambledText>
+
+
+
+            <p className="mt-4 md:mt-6 max-w-xl text-base md:text-lg text-[--color-light-300] text-center">
               Discover cutting-edge gadgets and premium electronics. From high-performance rigs to everyday essentials.
             </p>
             <div className="mt-6 md:mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -239,7 +235,7 @@ const Home = async () => {
           </div>
         </div>
       </section>
-    </main>
+    </main >
   );
 };
 

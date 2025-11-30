@@ -69,7 +69,7 @@ export default function CartList({ initialItems }: Props) {
                 <p className="mt-4 text-[--color-light-300]">Looks like you haven&apos;t added any gear yet.</p>
                 <Link
                     href="/products"
-                    className="mt-8 inline-block rounded-sm bg-[--color-neon-blue] px-8 py-3 font-rajdhani font-bold text-black uppercase tracking-widest transition hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.6)]"
+                    className="mt-8 inline-block rounded-sm bg-[--color-neon-blue] px-8 py-3 font-rajdhani font-bold text-white hover:text-black border-1 border-white uppercase tracking-widest transition hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.6)]"
                 >
                     Start Shopping
                 </Link>
