@@ -5,6 +5,7 @@ import { useState } from "react";
 import { removeFromWishlist } from "@/lib/actions/wishlist";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useWishlistStore } from "@/store/wishlist";
 
 export interface RemoveFromWishlistButtonProps {
     productId: string;
@@ -13,12 +14,16 @@ export interface RemoveFromWishlistButtonProps {
 export default function RemoveFromWishlistButton({ productId }: RemoveFromWishlistButtonProps) {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const removeItem = useWishlistStore((state) => state.removeItem);
 
     const handleRemove = async (e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent navigation if button is inside a link
+        e.preventDefault();
         e.stopPropagation();
 
         setIsLoading(true);
+
+        // Remove from store first (optimistic update)
+        await removeItem(productId, true);
 
         const result = await removeFromWishlist(productId);
 
@@ -26,7 +31,6 @@ export default function RemoveFromWishlistButton({ productId }: RemoveFromWishli
             toast.success("Removed from wishlist", {
                 duration: 2000,
             });
-            // Refresh the page to show updated wishlist
             router.refresh();
         } else {
             toast.error(result.error || "Failed to remove from wishlist", {
