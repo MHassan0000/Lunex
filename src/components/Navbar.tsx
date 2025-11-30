@@ -96,7 +96,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/sign-in"
-                className="relative overflow-hidden rounded-sm bg-[--color-dark-800] border border-[--color-neon-purple] px-6 py-2 text-sm font-bold text-[--color-neon-purple] hover:text-white transition-all hover:bg-[--color-neon-purple] hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] tracking-widest uppercase group"
+                className="relative overflow-hidden rounded-lg bg-[--color-dark-800] border border-[--color-neon-purple] px-6 py-2 text-sm font-bold text-[--color-neon-purple] hover:text-white transition-all hover:scale-105 hover:bg-[--color-neon-purple] hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] tracking-widest uppercase group"
               >
                 <span className="relative z-10">Login</span>
               </Link>
